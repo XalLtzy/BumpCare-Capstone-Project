@@ -3,7 +3,7 @@ import Home from './pages/home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-
+import PredictForm from './pages/PredictForm';
 
 function App() {
   return (
@@ -13,6 +13,7 @@ function App() {
         <Route path="/login" element={<Login />} />     
         <Route path="/register" element={<Register />} /> 
         <Route path="/dashboard" element={<Dashboard />} /> 
+        <Route path="/predict" element={<PredictForm />} /> 
       </Routes>
     </BrowserRouter>
   );
