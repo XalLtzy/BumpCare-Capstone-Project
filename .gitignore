@@ -1,0 +1,11 @@
+# umum
+node_modules
+.env
+.DS_Store
+
+# frontend & backend logs
+**/dist
+**/.next
+**/.turbo
+**/logs
+**/npm-debug.log*
