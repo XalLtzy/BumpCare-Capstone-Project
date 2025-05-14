@@ -9,6 +9,5 @@ export async function loginUser({ email, password }) {
 
 export async function registerUser({ name, email, password }) {
   await api.post('/register', { name, email, password });
-  // Auto login setelah register
   return await loginUser({ email, password });
 }

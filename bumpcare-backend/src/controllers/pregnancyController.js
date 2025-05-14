@@ -8,23 +8,20 @@ const predictHandler = async (request, h) => {
   }
 
   const { age, weight, height, trimester } = request.payload;
-  const userId = request.auth.user.id;
+  const userId = request.auth.credentials.id; 
 
-  // Hitung BMI
   const heightInMeters = height / 100;
   const bmi = +(weight / (heightInMeters * heightInMeters)).toFixed(2);
 
-  // Dummy kalori sesuai trimester (bisa diganti ML nanti)
+  const trimesterInt = parseInt(trimester);
   let calorieNeed = 2200;
-  if (trimester === 2) calorieNeed += 300;
-  if (trimester === 3) calorieNeed += 450;
+  if (trimesterInt === 2) calorieNeed += 300;
+  if (trimesterInt === 3) calorieNeed += 450;
 
-  // Dummy status gizi (bisa diganti hasil ML)
   let statusGizi = 'Normal';
   if (bmi < 18.5) statusGizi = 'Kurus';
   else if (bmi >= 25) statusGizi = 'Berlebih';
 
-  // Simpan ke database
   try {
     await pool.query(
       `INSERT INTO pregnancy_records 
@@ -35,11 +32,7 @@ const predictHandler = async (request, h) => {
 
     return h.response({
       status: 'success',
-      data: {
-        bmi,
-        calorieNeed,
-        statusGizi
-      }
+      data: { bmi, calorieNeed, statusGizi }
     }).code(200);
   } catch (err) {
     console.error(err);
@@ -48,7 +41,7 @@ const predictHandler = async (request, h) => {
 };
 
 const getRecordsHandler = async (request, h) => {
-  const userId = request.auth.user.id;
+  const userId = request.auth.credentials.id;
 
   try {
     const result = await pool.query(
@@ -59,7 +52,7 @@ const getRecordsHandler = async (request, h) => {
     return h.response({
       status: 'success',
       data: result.rows
-    }).code(200);
+    });
   } catch (err) {
     console.error(err);
     return h.response({ status: 'error', message: 'Gagal mengambil data' }).code(500);
@@ -67,7 +60,7 @@ const getRecordsHandler = async (request, h) => {
 };
 
 const deleteRecordHandler = async (request, h) => {
-  const userId = request.auth.user.id;
+  const userId = request.auth.credentials.id; 
   const { id } = request.params;
 
   try {
@@ -91,7 +84,7 @@ const updateRecordHandler = async (request, h) => {
   const { error } = pregnancyInputSchema.validate(request.payload);
   if (error) return h.response({ status: 'fail', message: error.message }).code(400);
 
-  const userId = request.auth.user.id;
+  const userId = request.auth.credentials.id; 
   const { id } = request.params;
   const { age, weight, height, trimester } = request.payload;
 
@@ -134,4 +127,3 @@ module.exports = {
   deleteRecordHandler,
   updateRecordHandler
 };
-

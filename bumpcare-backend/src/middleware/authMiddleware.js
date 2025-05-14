@@ -14,7 +14,7 @@ const verifyToken = async (request, h) => {
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    request.auth = { user: decoded }; 
+    request.auth = { credentials: decoded };
     return h.continue;
   } catch (err) {
     return h.response({ status: 'fail', message: 'Token tidak valid' }).code(403).takeover();

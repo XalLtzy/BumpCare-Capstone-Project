@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { loginUser } from '../presenters/authPresenter'; 
+import { loginUser } from '../presenters/authPresenter';
+import { motion } from 'framer-motion';
+import {
+  fadeVariant,
+  slideUpVariant,
+  scaleInVariant,
+  fadeInDelayed,
+} from '../animations/variants';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -12,29 +19,49 @@ export default function Login() {
     e.preventDefault();
     setErrorMsg('');
     try {
-      const user = await loginUser({ email, password });
-      navigate('/dashboard')
+      await loginUser({ email, password });
+      navigate('/dashboard');
     } catch (err) {
       setErrorMsg(err.response?.data?.message || 'Login gagal');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <motion.div
+      className="min-h-screen flex items-center justify-center bg-gray-100"
+      {...fadeVariant}
+    >
       <div className="flex w-full max-w-4xl bg-white rounded-xl shadow overflow-hidden">
         {/* Kiri */}
         <div className="hidden md:flex w-1/2 flex-col items-center justify-center bg-gray-50 p-8">
-          <img src="/src/assets/images/Bumil.png" alt="Ilustrasi" className="w-3/4 mb-6" />
-          <h2 className="text-2xl font-bold">BumpCare</h2>
-          <p className="text-gray-500 text-center text-sm mt-2">A Smart Pregnancy</p>
-          <p className="text-gray-500 text-center text-sm mt-2">Companion for</p>
-          <p className="text-gray-500 text-center text-sm mt-2">Maternal Well-being</p>
+          <motion.img
+            src="/src/assets/images/Bumil.png"
+            alt="Ilustrasi"
+            className="w-3/4 mb-6"
+            {...scaleInVariant}
+          />
+          <motion.h2 className="text-2xl font-bold" {...fadeInDelayed}>
+            BumpCare
+          </motion.h2>
+          <p className="text-gray-500 text-center text-sm mt-2">
+            A Smart Pregnancy
+          </p>
+          <p className="text-gray-500 text-center text-sm mt-2">
+            Companion for
+          </p>
+          <p className="text-gray-500 text-center text-sm mt-2">
+            Maternal Well-being
+          </p>
         </div>
 
         {/* Kanan */}
-        <div className="w-full md:w-1/2 p-8">
+        <motion.div className="w-full md:w-1/2 p-8" {...slideUpVariant}>
           <h2 className="text-2xl font-bold mb-6 text-center">Masuk</h2>
-          {errorMsg && <div className="text-red-500 text-sm text-center mb-4">{errorMsg}</div>}
+          {errorMsg && (
+            <div className="text-red-500 text-sm text-center mb-4">
+              {errorMsg}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
@@ -57,15 +84,21 @@ export default function Login() {
                 className="w-full border px-3 py-2 rounded-md outline-purple-400"
               />
             </div>
-            <button type="submit" className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800">
+            <button
+              type="submit"
+              className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800"
+            >
               Masuk
             </button>
             <p className="text-sm text-center">
-              Belum punya akun? <Link to="/register" className="underline">Daftar</Link>
+              Belum punya akun?{' '}
+              <Link to="/register" className="underline">
+                Daftar
+              </Link>
             </p>
           </form>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

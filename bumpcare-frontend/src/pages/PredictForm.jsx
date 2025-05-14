@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import api from '../models/api';
+import { predictHealth } from '../presenters/predictPresenter';
+import SidebarLayout from '../components/SidebarLayout';
 
 export default function PredictForm() {
   const [age, setAge] = useState('');
@@ -9,20 +10,28 @@ export default function PredictForm() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setResult(null);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setResult(null);
 
-    try {
-      const res = await api.post('/predict', { age, weight, height, trimester });
-      setResult(res.data.data);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Terjadi kesalahan');
-    }
-  };
+  const { data, error } = await predictHealth({
+  age: Number(age),
+  weight: Number(weight),
+  height: Number(height),
+  trimester: Number(trimester),
+});
+
+
+  if (error) {
+    setError(error);
+  } else {
+    setResult(data);
+  }
+};
 
   return (
+    <SidebarLayout>
     <div className="min-h-screen bg-purple-50 flex items-center justify-center px-4 py-10">
       <div className="bg-white w-full max-w-3xl p-8 rounded-2xl shadow-lg">
         <h1 className="text-2xl font-bold text-center text-purple-700 mb-6">Formulir Prediksi Kesehatan Ibu Hamil</h1>
@@ -94,10 +103,11 @@ export default function PredictForm() {
           <div className="mt-6 p-4 bg-purple-100 rounded-lg text-center space-y-2">
             <p><strong>BMI:</strong> {result.bmi}</p>
             <p><strong>Kebutuhan Kalori:</strong> {result.calorieNeed} kkal/hari</p>
-            <p><strong>Status Gizi:</strong> {result.status}</p>
+            <p><strong>Status Gizi:</strong> {result.statusGizi}</p>
           </div>
         )}
       </div>
     </div>
+    </SidebarLayout>
   );
 }
