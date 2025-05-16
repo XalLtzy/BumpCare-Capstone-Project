@@ -1,7 +1,9 @@
 const Hapi = require('@hapi/hapi');
-const pregnancyRoutes = require('./routes/pregnancyRoutes');
 require('dotenv').config();
+
 const authRoutes = require('./routes/authRoutes');
+const pregnancyRoutes = require('./routes/pregnancyRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 const init = async () => {
   const server = Hapi.server({
@@ -15,7 +17,7 @@ const init = async () => {
     },
   });
 
-  server.route([...authRoutes, ...pregnancyRoutes]);
+  server.route([...authRoutes, ...pregnancyRoutes, ...userRoutes]);
 
   await server.start();
   console.log('Server running on %s', server.info.uri);

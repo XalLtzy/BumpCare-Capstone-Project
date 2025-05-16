@@ -1,7 +1,7 @@
 const { pregnancyInputSchema } = require('../validations/pregnancyValidation');
 const pool = require('../models/db');
 
-const predictHandler = async (request, h) => {
+const calculateHandler = async (request, h) => {
   const { error } = pregnancyInputSchema.validate(request.payload);
   if (error) {
     return h.response({ status: 'fail', message: error.message }).code(400);
@@ -121,9 +121,31 @@ const updateRecordHandler = async (request, h) => {
   }
 };
 
+const getLatestResultHandler = async (request, h) => {
+  const userId = request.auth.credentials.id;
+  try {
+    const result = await pool.query(
+      `SELECT bmi, calorie_needs, status_gizi, created_at 
+       FROM pregnancy_records 
+       WHERE user_id = $1 
+       ORDER BY created_at DESC 
+       LIMIT 1`,
+      [userId]
+    );
+    if (result.rowCount === 0) {
+      return h.response({ status: 'fail', message: 'Data tidak ditemukan' }).code(404);
+    }
+    return h.response({ status: 'success', data: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    return h.response({ status: 'error', message: 'Gagal mengambil data' }).code(500);
+  }
+};
+
 module.exports = {
-  predictHandler,
+  calculateHandler,
   getRecordsHandler,
   deleteRecordHandler,
-  updateRecordHandler
+  updateRecordHandler,
+  getLatestResultHandler,  
 };

@@ -1,16 +1,17 @@
-const {
-  predictHandler,
+const { 
+  calculateHandler,   
   getRecordsHandler,
   deleteRecordHandler,
-  updateRecordHandler
+  updateRecordHandler,
+  getLatestResultHandler
 } = require('../controllers/pregnancyController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
 const pregnancyRoutes = [
   {
     method: 'POST',
-    path: '/api/predict',
-    handler: predictHandler,
+    path: '/api/calculate',   
+    handler: calculateHandler, 
     options: { pre: [{ method: verifyToken }] }
   },
   {
@@ -29,6 +30,12 @@ const pregnancyRoutes = [
     method: 'PUT',
     path: '/api/records/{id}',
     handler: updateRecordHandler,
+    options: { pre: [{ method: verifyToken }] }
+  },
+  {
+    method: 'GET',
+    path: '/api/latest-result',
+    handler: getLatestResultHandler,
     options: { pre: [{ method: verifyToken }] }
   }
 ];
