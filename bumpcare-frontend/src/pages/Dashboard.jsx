@@ -1,57 +1,78 @@
 import { useEffect, useState } from 'react';
 import SidebarLayout from '../components/SidebarLayout';
-import { fetchRecords } from '../presenters/predictPresenter';
+import { useNavigate } from 'react-router-dom';
+import { getUserProfile } from '../presenters/userPresenter';
 
 export default function Dashboard() {
-  const user = JSON.parse(localStorage.getItem('user')) || {};
-  const [records, setRecords] = useState([]);
+  const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [bmiData, setBmiData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const loadRecords = async () => {
-      const { data, error } = await fetchRecords();
-      if (!error && data) {
-        setRecords(data.slice(0, 3)); 
-      }
-      setLoading(false);
-    };
+    getUserProfile()
+      .then(data => {
+        setProfile(data);
+        setLoading(false);
+      })
+      .catch(() => {
+        setProfile(null);
+        setLoading(false);
+      });
 
-    loadRecords();
+    const stored = localStorage.getItem('bmiResult');
+    if (stored) {
+      setBmiData(JSON.parse(stored));
+    }
   }, []);
+
+  if (loading) return <SidebarLayout><p className="p-6">Loading...</p></SidebarLayout>;
+
+  const isProfileComplete = profile &&
+    profile.age && profile.weight && profile.height && profile.trimester;
 
   return (
     <SidebarLayout>
-      <h1 className="text-2xl font-bold text-purple-700 mb-2">Halo, {user.name || 'Ibu Hamil'} 👋</h1>
-      <p className="text-gray-600 mb-6">Selamat datang kembali di BumpCare.</p>
+      <div className="relative min-h-screen bg-purple-50 p-6">
+        {!isProfileComplete ? (
+          <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg text-center">
+            <h2 className="text-xl font-semibold mb-4 text-purple-700">
+              Profil Anda belum lengkap
+            </h2>
+            <p className="mb-6">
+              Silakan lengkapi data pribadi Anda terlebih dahulu untuk mulai menggunakan aplikasi.
+            </p>
+            <button
+              onClick={() => navigate('/profile')}
+              className="bg-purple-600 text-white px-6 py-3 rounded-full hover:bg-purple-700 transition"
+            >
+              Isi Profil Sekarang
+            </button>
+          </div>
+        ) : (
+          <div className="max-w-xl mx-auto bg-white p-8 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-bold text-purple-700 mb-4">Halo, {profile.name} 👋</h2>
+            <p className="mb-1">Trimester ke-{profile.trimester}</p>
+            <p className="mb-6">Usia: {profile.age} tahun</p>
 
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Riwayat Prediksi Terbaru</h2>
-      </div>
-
-      {loading ? (
-        <p>Memuat data...</p>
-      ) : records.length === 0 ? (
-        <p className="text-gray-600">Belum ada riwayat prediksi.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {records.map((record) => (
-            <div key={record.id} className="border rounded-lg p-4 bg-purple-100">
-              <p className="text-sm text-gray-600 mb-1">
-                Usia: {record.age} • Trimester: {record.trimester}
-              </p>
-              <p className="text-sm">
-                Berat: {record.weight}kg • Tinggi: {record.height}cm
-              </p>
-              <p className="text-sm mt-2 font-medium">
-                BMI: {record.bmi} • Kalori: {record.calorie_needs} kkal
-              </p>
-              <p className={`text-sm ${record.status_gizi === 'Normal' ? 'text-green-600' : 'text-red-600'}`}>
-                Status: {record.status_gizi}
-              </p>
+            <div className="space-y-2">
+              <p><strong>Berat Badan:</strong> {profile.weight} kg</p>
+              <p><strong>Tinggi Badan:</strong> {profile.height} cm</p>
+              <p><strong>BMI:</strong> {bmiData?.bmi || '-'} {bmiData?.status ? `(${bmiData.status})` : '(Belum dihitung)'}</p>
+              <p><strong>Kebutuhan Kalori:</strong> {bmiData?.calorieNeed ? `${bmiData.calorieNeed} kkal/hari` : 'Belum dihitung'}</p>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        )}
+
+        <button
+          onClick={() => navigate('/profile')}
+          className="fixed bottom-8 right-8 bg-purple-700 text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg hover:bg-purple-800 transition"
+          aria-label="Edit Profil"
+          title="Edit Profil"
+        >
+          👤
+        </button>
+      </div>
     </SidebarLayout>
   );
 }

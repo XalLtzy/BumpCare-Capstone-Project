@@ -1,13 +1,13 @@
 import api from '../models/api';
 
-export async function predictHealth({ age, weight, height, trimester }) {
+export async function calculateNutrition(payload) {
   try {
-    const res = await api.post('/predict', { age, weight, height, trimester });
+    const res = await api.post('/calculate', payload); 
     return { data: res.data.data, error: null };
   } catch (err) {
     return {
       data: null,
-      error: err.response?.data?.message || 'Terjadi kesalahan saat prediksi',
+      error: err.response?.data?.message || 'Terjadi kesalahan saat menghitung nutrisi',
     };
   }
 }

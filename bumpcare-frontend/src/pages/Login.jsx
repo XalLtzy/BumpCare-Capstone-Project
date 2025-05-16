@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../presenters/authPresenter';
 import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast'; 
 import {
   fadeVariant,
   slideUpVariant,
@@ -20,9 +21,12 @@ export default function Login() {
     setErrorMsg('');
     try {
       await loginUser({ email, password });
+      toast.success('Berhasil login!'); 
       navigate('/dashboard');
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Login gagal');
+      const msg = err.response?.data?.message || 'Login gagal';
+      setErrorMsg(msg);
+      toast.error(msg); 
     }
   };
 

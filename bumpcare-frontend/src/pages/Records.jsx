@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchRecords } from '../presenters/predictPresenter';
+import { fetchRecords } from '../presenters/calculatorPresenter';
 import SidebarLayout from '../components/SidebarLayout';
 
 export default function Records() {

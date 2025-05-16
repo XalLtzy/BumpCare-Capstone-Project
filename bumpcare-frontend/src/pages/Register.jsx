@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerUser } from '../presenters/authPresenter';
 import { motion } from 'framer-motion';
+import { toast } from 'react-hot-toast';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -15,9 +16,12 @@ export default function Register() {
     setErrorMsg('');
     try {
       await registerUser({ name, email, password });
+      toast.success('Registrasi berhasil!');
       navigate('/dashboard');
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Registrasi gagal');
+      const msg = err.response?.data?.message || 'Registrasi gagal';
+      setErrorMsg(msg);
+      toast.error(msg);
     }
   };
 
