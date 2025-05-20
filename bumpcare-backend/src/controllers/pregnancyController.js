@@ -132,10 +132,22 @@ const getLatestResultHandler = async (request, h) => {
        LIMIT 1`,
       [userId]
     );
+
     if (result.rowCount === 0) {
-      return h.response({ status: 'fail', message: 'Data tidak ditemukan' }).code(404);
+      return h.response({ status: 'success', data: null }).code(200);
     }
-    return h.response({ status: 'success', data: result.rows[0] });
+
+    const row = result.rows[0];
+
+    return h.response({
+      status: 'success',
+      data: {
+        bmi: row.bmi,
+        calorieNeed: row.calorie_needs,
+        status: row.status_gizi,
+        createdAt: row.created_at
+      }
+    }).code(200);
   } catch (err) {
     console.error(err);
     return h.response({ status: 'error', message: 'Gagal mengambil data' }).code(500);

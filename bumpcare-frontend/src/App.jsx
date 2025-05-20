@@ -45,34 +45,41 @@ export default function App() {
   return (
     <BrowserRouter>
       <AnimatedRoutes />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: 'linear-gradient(135deg, #7c3aed, #a78bfa)',
-            color: '#f9fafb',
-            padding: '16px 24px',
-            borderRadius: '14px',
-            boxShadow: '0 8px 24px rgba(124, 58, 237, 0.3)',
-            fontWeight: '700',
-            fontFamily: "'Poppins', sans-serif",
-            letterSpacing: '0.02em',
+    <Toaster
+     position="top-right"
+      toastOptions={{
+      duration: 2000,
+      style: {
+         zIndex: 9999, 
+         background: '#1e1b4b', 
+         color: '#f3f4f6', 
+         padding: '14px 20px',
+         borderRadius: '12px',
+         boxShadow: '0 10px 25px rgba(30, 27, 75, 0.3)',
+         fontWeight: 600,
+         fontFamily: "'Inter', sans-serif",
+         fontSize: '0.95rem',
+         cursor: 'pointer', 
+       },
+        success: {
+          iconTheme: {
+            primary: '#4ade80',   
+            secondary: '#166534', 
           },
-          success: {
-            iconTheme: {
-              primary: '#d1fae5',
-              secondary: '#065f46',
-            },
+       },
+       error: {
+          iconTheme: {
+            primary: '#f87171',   
+            secondary: '#7f1d1d', 
           },
-          error: {
-            iconTheme: {
-              primary: '#fecaca',
-              secondary: '#7f1d1d',
-            },
-          },
-        }}
-      />
+       },
+     }}
+
+      toast={(t) => ({
+        ...t,
+        onClick: () => toast.dismiss(t.id),
+      })}
+    />
     </BrowserRouter>
   );
 }
