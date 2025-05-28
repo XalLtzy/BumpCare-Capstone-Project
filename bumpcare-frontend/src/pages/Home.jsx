@@ -198,7 +198,7 @@ export default function Home() {
       </motion.section>
 
       {/* Footer */}
-      <footer className="bg-[#FFF2EB] py-6 border-t">
+      <footer className="bg-[#FFDCDC] py-6 border-t">
         <div className="container mx-auto px-6 text-center text-sm text-gray-700">
           © 2025 <span className="font-semibold">BumpCare</span>. All rights reserved.
         </div>
