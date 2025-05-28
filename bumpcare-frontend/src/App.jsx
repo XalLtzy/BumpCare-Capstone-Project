@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -13,10 +13,10 @@ import Records from './pages/Records';
 function PageTransition({ children }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -30 }}
+      transition={{ duration: 0.5, ease: 'easeInOut' }}
     >
       {children}
     </motion.div>
@@ -45,41 +45,40 @@ export default function App() {
   return (
     <BrowserRouter>
       <AnimatedRoutes />
-    <Toaster
-     position="top-right"
-      toastOptions={{
-      duration: 2000,
-      style: {
-         zIndex: 9999, 
-         background: '#1e1b4b', 
-         color: '#f3f4f6', 
-         padding: '14px 20px',
-         borderRadius: '12px',
-         boxShadow: '0 10px 25px rgba(30, 27, 75, 0.3)',
-         fontWeight: 600,
-         fontFamily: "'Inter', sans-serif",
-         fontSize: '0.95rem',
-         cursor: 'pointer', 
-       },
-        success: {
-          iconTheme: {
-            primary: '#4ade80',   
-            secondary: '#166534', 
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 2000,
+          style: {
+            zIndex: 9999,
+            background: '#1e1b4b',
+            color: '#f3f4f6',
+            padding: '14px 20px',
+            borderRadius: '12px',
+            boxShadow: '0 10px 25px rgba(30, 27, 75, 0.3)',
+            fontWeight: 600,
+            fontFamily: "'Inter', sans-serif",
+            fontSize: '0.95rem',
+            cursor: 'pointer',
           },
-       },
-       error: {
-          iconTheme: {
-            primary: '#f87171',   
-            secondary: '#7f1d1d', 
+          success: {
+            iconTheme: {
+              primary: '#4ade80',
+              secondary: '#166534',
+            },
           },
-       },
-     }}
-
-      toast={(t) => ({
-        ...t,
-        onClick: () => toast.dismiss(t.id),
-      })}
-    />
+          error: {
+            iconTheme: {
+              primary: '#f87171',
+              secondary: '#7f1d1d',
+            },
+          },
+        }}
+        toast={(t) => ({
+          ...t,
+          onClick: () => toast.dismiss(t.id),
+        })}
+      />
     </BrowserRouter>
   );
 }
