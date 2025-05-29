@@ -27,13 +27,13 @@ export default function Register() {
 
   return (
     <motion.div 
-      className="min-h-screen flex items-center justify-center bg-gray-100"
+      className="min-h-screen flex items-center justify-center bg-gray-100 text-lg"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex w-full max-w-4xl bg-white rounded-xl shadow overflow-hidden">
+      <div className="flex w-full max-w-4xl bg-[#FFF2EB] rounded-xl shadow overflow-hidden">
         {/* Kiri */}
         <motion.div 
           className="w-full md:w-1/2 p-8"
@@ -56,7 +56,7 @@ export default function Register() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border px-3 py-2 rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <div>
@@ -66,7 +66,7 @@ export default function Register() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border px-3 py-2 rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function Register() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border px-3 py-2 rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <button 
@@ -92,7 +92,7 @@ export default function Register() {
         </motion.div>
 
         {/* Kanan */}
-        <div className="hidden md:flex w-1/2 flex-col items-center justify-center bg-gray-50 p-8">
+        <div className="hidden md:flex w-1/2 flex-col items-center justify-center bg-[#FFDCDC] p-10">
           <motion.img
             src="/src/assets/images/Bumil.png"
             alt="Ilustrasi"

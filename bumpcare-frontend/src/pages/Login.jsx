@@ -35,9 +35,9 @@ export default function Login() {
       className="min-h-screen flex items-center justify-center bg-gray-100"
       {...fadeVariant}
     >
-      <div className="flex w-full max-w-4xl bg-white rounded-xl shadow overflow-hidden">
+      <div className="flex w-full max-w-5xl bg-[#FFF2EB] rounded-xl shadow overflow-hidden">
         {/* Kiri */}
-        <div className="hidden md:flex w-1/2 flex-col items-center justify-center bg-gray-50 p-8">
+        <div className="hidden md:flex w-1/2 flex-col items-center justify-center bg-[#FFDCDC] p-10">
           <motion.img
             src="/src/assets/images/Bumil.png"
             alt="Ilustrasi"
@@ -59,15 +59,15 @@ export default function Login() {
         </div>
 
         {/* Kanan */}
-        <motion.div className="w-full md:w-1/2 p-8" {...slideUpVariant}>
-          <h2 className="text-2xl font-bold mb-6 text-center">Masuk</h2>
+        <motion.div className="w-full md:w-1/2 p-12 md:p-16" {...slideUpVariant}>
+          <h2 className="text-3xl font-bold mb-8 text-center">Masuk</h2>
           {errorMsg && (
             <div className="text-red-500 text-sm text-center mb-4">
               {errorMsg}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="block text-sm mb-1">Email</label>
               <input
@@ -75,7 +75,7 @@ export default function Login() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border px-3 py-2 rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <div>
@@ -85,12 +85,12 @@ export default function Login() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border px-3 py-2 rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800"
+              className="w-full bg-black text-white py-3 rounded-full hover:bg-gray-800 text-lg"
             >
               Masuk
             </button>
