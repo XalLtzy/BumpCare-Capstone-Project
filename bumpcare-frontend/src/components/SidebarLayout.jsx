@@ -30,28 +30,31 @@ export default function SidebarLayout({ children }) {
       </div>
 
       {/* Sidebar mobile & desktop */}
-      <aside
-        className={`
-          bg-white shadow-md p-6 z-20 w-64 md:block
-          ${sidebarOpen ? 'block absolute top-16 left-0 h-full' : 'hidden'}
-          md:static md:h-auto
-        `}
-      >
-        {/* Sidebar Title (visible only on desktop) */}
-        <h2 className="text-xl font-bold text-purple-700 mb-6 font-poppins hidden md:block">BumpCare</h2>
+    <aside
+  className={`
+    shadow-md p-6 z-20 w-64 md:block
+    ${sidebarOpen ? 'block absolute top-16 left-0 h-full' : 'hidden'}
+    md:static md:h-auto
+  `}
+  style={{ backgroundColor: '#FFDCDC' }}
+>
+  {/* Sidebar Title (visible only on desktop) */}
+  <h2 className="text-xl font-bold text-purple-700 mb-6 font-poppins hidden md:block">BumpCare</h2>
 
-        <nav className="flex flex-col space-y-3 font-poppins">
-          <Link to="/dashboard" className="text-gray-700 hover:text-purple-700">🏠 Dashboard</Link>
-          <Link to="/calculate" className="text-gray-700 hover:text-purple-700">📝 Kalkulator</Link>
-          <Link to="/records" className="text-gray-700 hover:text-purple-700">📋 Riwayat</Link>
-          <button
-            onClick={handleLogout}
-            className="text-red-500 hover:text-red-700 transition text-left mt-4"
-          >
-            🚪 Logout
-          </button>
-        </nav>
-      </aside>
+  <nav className="flex flex-col space-y-3 font-poppins">
+    <Link to="/dashboard" className="text-gray-700 hover:text-purple-700">🏠 Dashboard</Link>
+    <Link to="/calculate" className="text-gray-700 hover:text-purple-700">📝 Kalkulator</Link>
+    <Link to="/records" className="text-gray-700 hover:text-purple-700">📋 Riwayat</Link>
+    <button
+      onClick={handleLogout}
+      className="text-red-500 hover:text-red-700 transition text-left mt-4"
+    >
+      🚪 Logout
+    </button>
+  </nav>
+</aside>
+
+
 
       {/* Main content */}
       <main className="flex-1 p-6">{children}</main>
