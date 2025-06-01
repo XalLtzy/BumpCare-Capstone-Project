@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { getUserProfile, updateUserProfile } from '../presenters/userPresenter';
+import { getUserProfile, updateUserProfilePresenter } from '../presenters/userPresenter';
 import { toast } from 'react-hot-toast';
 
 export default function ProfileTwoColumn() {
@@ -10,18 +10,24 @@ export default function ProfileTwoColumn() {
     weight: '',
     height: '',
     trimester: '',
+    activity_level: '',
+    medical_history: '',
   });
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserProfile()
       .then(data => {
-        if (data) setForm({
-          age: data.age ?? '',
-          weight: data.weight ?? '',
-          height: data.height ?? '',
-          trimester: data.trimester ?? '',
-        });
+        if (data) {
+          setForm({
+            age: data.age ?? '',
+            weight: data.weight ?? '',
+            height: data.height ?? '',
+            trimester: data.trimester ?? '',
+            activity_level: data.activity_level ?? '',
+            medical_history: data.medical_history ?? '',
+          });
+        }
       })
       .catch(() => toast.error('Gagal mengambil profil'));
   }, []);
@@ -34,7 +40,7 @@ export default function ProfileTwoColumn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await updateUserProfile(form);
+      const res = await updateUserProfilePresenter(form);
       toast.success(res.message || 'Profil berhasil disimpan');
       setTimeout(() => navigate('/dashboard'), 1000);
     } catch {
@@ -61,6 +67,8 @@ export default function ProfileTwoColumn() {
           <li>Berat Badan</li>
           <li>Tinggi Badan</li>
           <li>Trimester Kehamilan</li>
+          <li>Tingkat Aktivitas</li>
+          <li>Riwayat Medis</li>
         </ul>
       </motion.div>
 
@@ -72,6 +80,7 @@ export default function ProfileTwoColumn() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
+        {/* Usia */}
         <div className="flex flex-col gap-1">
           <label htmlFor="age" className="font-semibold text-gray-700">Usia (tahun)</label>
           <input
@@ -86,6 +95,8 @@ export default function ProfileTwoColumn() {
             max={50}
           />
         </div>
+
+        {/* Berat Badan */}
         <div className="flex flex-col gap-1">
           <label htmlFor="weight" className="font-semibold text-gray-700">Berat Badan (kg)</label>
           <input
@@ -101,6 +112,8 @@ export default function ProfileTwoColumn() {
             step="0.1"
           />
         </div>
+
+        {/* Tinggi Badan */}
         <div className="flex flex-col gap-1">
           <label htmlFor="height" className="font-semibold text-gray-700">Tinggi Badan (cm)</label>
           <input
@@ -116,6 +129,8 @@ export default function ProfileTwoColumn() {
             step="0.1"
           />
         </div>
+
+        {/* Trimester */}
         <div className="flex flex-col gap-1">
           <label htmlFor="trimester" className="font-semibold text-gray-700">Trimester Kehamilan</label>
           <select
@@ -133,6 +148,39 @@ export default function ProfileTwoColumn() {
           </select>
         </div>
 
+        {/* Tingkat Aktivitas */}
+        <div className="flex flex-col gap-1">
+          <label htmlFor="activity_level" className="font-semibold text-gray-700">Aktivitas Harian</label>
+          <select
+            id="activity_level"
+            name="activity_level"
+            value={form.activity_level}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600"
+            required
+          >
+            <option value="">Pilih Tingkat Aktivitas</option>
+            <option value="Rendah">Rendah</option>
+            <option value="Sedang">Sedang</option>
+            <option value="Tinggi">Tinggi</option>
+          </select>
+        </div>
+
+        {/* Riwayat Penyakit */}
+        <div className="flex flex-col gap-1 md:col-span-2">
+          <label htmlFor="medical_history" className="font-semibold text-gray-700">Riwayat Medis</label>
+          <textarea
+            id="medical_history"
+            name="medical_history"
+            value={form.medical_history}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-600 resize-none"
+            rows={4}
+            placeholder="Tuliskan riwayat medis jika ada"
+          />
+        </div>
+
+        {/* Submit */}
         <div className="md:col-span-2">
           <button
             type="submit"

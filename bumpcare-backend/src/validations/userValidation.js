@@ -5,6 +5,8 @@ const userProfileSchema = Joi.object({
   weight: Joi.number().min(30).max(200).required(),
   height: Joi.number().min(100).max(220).required(),
   trimester: Joi.number().valid(1, 2, 3).required(),
+  activity_level: Joi.string().max(50).optional().allow('', null),
+  medical_history: Joi.string().max(500).optional().allow('', null),
 });
 
 module.exports = { userProfileSchema };

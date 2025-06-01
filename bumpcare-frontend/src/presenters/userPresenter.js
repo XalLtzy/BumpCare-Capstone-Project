@@ -1,11 +1,9 @@
-import api from '../models/api';
+import { fetchUserProfile, updateUserProfile } from '../models/userModel';
 
 export async function getUserProfile() {
-  const res = await api.get('/profile');
-  return res.data.data;
+  return await fetchUserProfile();
 }
 
-export async function updateUserProfile(data) {
-  const res = await api.put('/profile', data);
-  return res.data;
+export async function updateUserProfilePresenter(data) {
+  return await updateUserProfile(data);
 }

@@ -89,6 +89,10 @@ export default function Dashboard() {
                   <p><span className="font-semibold">Berat Badan:</span> {profile.weight} kg</p>
                   <p><span className="font-semibold">Tinggi Badan:</span> {profile.height} cm</p>
                 </div>
+                <div className="mt-4 text-sm md:text-base text-gray-700 space-y-1">
+                  <p><span className="font-semibold">Aktivitas Harian:</span> {profile.activity_level || '-'}</p>
+                  <p><span className="font-semibold">Riwayat Medis:</span> {profile.Medical_history || '-'}</p>
+                </div>
               </div>
               <button
                 onClick={() => navigate('/profile')}
