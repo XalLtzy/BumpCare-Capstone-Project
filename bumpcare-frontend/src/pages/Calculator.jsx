@@ -3,6 +3,8 @@ import SidebarLayout from '../components/SidebarLayout';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../presenters/userPresenter';
 import { calculateNutrition } from '../presenters/calculatorPresenter';
+import { motion } from 'framer-motion';
+import { fadeVariant, slideUpVariant, fadeInDelayed } from '../animations/variants';
 
 export default function Calculator() {
   const [profile, setProfile] = useState(null);
@@ -24,8 +26,12 @@ export default function Calculator() {
       });
   }, []);
 
-  const isProfileComplete = profile &&
-    profile.age && profile.weight && profile.height && profile.trimester;
+  const isProfileComplete =
+    profile &&
+    profile.age &&
+    profile.weight &&
+    profile.height &&
+    profile.trimester;
 
   const handleCalculate = async () => {
     setError('');
@@ -51,6 +57,8 @@ export default function Calculator() {
     }
   };
 
+  const animatedClass = "will-change-transform will-change-opacity";
+
   if (loadingProfile) {
     return (
       <SidebarLayout>
@@ -64,9 +72,12 @@ export default function Calculator() {
 
   return (
     <SidebarLayout>
-      <main className="min-h-screen bg-gradient-to-tr from-purple-50 to-purple-100 p-4 sm:p-6 md:p-8 flex flex-col items-center">
+      <motion.main {...fadeVariant} className={`px-4 pb-10 ${animatedClass}`}>
         {!isProfileComplete ? (
-          <section className="w-full max-w-xl bg-white p-6 sm:p-8 rounded-2xl shadow-lg text-center">
+          <motion.section
+            {...slideUpVariant}
+            className={`max-w-xl mx-auto bg-[#FFDCDC] p-6 md:p-10 rounded-2xl shadow-lg text-center ${animatedClass}`}
+          >
             <h2 className="text-2xl font-semibold mb-6 text-purple-700">
               Profil Anda belum lengkap
             </h2>
@@ -79,28 +90,36 @@ export default function Calculator() {
             >
               Isi Profil Sekarang
             </button>
-          </section>
+          </motion.section>
         ) : (
-          <section className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-4 sm:p-6 md:p-10 space-y-8 mx-auto">
+          <motion.section
+            {...fadeInDelayed}
+            className={`w-full max-w-5xl bg-[#FFDCDC] rounded-2xl shadow-lg p-4 sm:p-6 md:p-10 space-y-8 mx-auto ${animatedClass}`}
+          >
             <h1 className="text-3xl font-extrabold text-purple-800 text-center">
               Kalkulator Kebutuhan Kalori & Pemantauan BMI
             </h1>
 
-            <div className="bg-purple-100 rounded-xl p-6 shadow-md grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-purple-700 font-semibold text-base sm:text-lg">
+            <motion.div
+              {...slideUpVariant}
+              className="rounded-xl p-4 md:p-6 shadow-inner grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-purple-700 font-semibold text-base sm:text-lg"
+              style={{ backgroundColor: '#FFF2EB' }}
+            >
               <p><span className="text-purple-900 font-bold">Usia:</span> {profile.age} tahun</p>
               <p><span className="text-purple-900 font-bold">Berat Badan:</span> {profile.weight} kg</p>
               <p><span className="text-purple-900 font-bold">Tinggi Badan:</span> {profile.height} cm</p>
               <p><span className="text-purple-900 font-bold">Trimester:</span> {profile.trimester}</p>
-            </div>
+            </motion.div>
 
-            <div className="bg-white border-l-4 border-purple-600 p-6 rounded-lg shadow-md text-purple-900 space-y-3">
+            <motion.div {...fadeInDelayed} className="rounded-xl p-4 md:p-6 shadow-inner space-y-3" style={{ backgroundColor: '#FFF2EB' }}>
               <h2 className="text-xl font-bold">Mengapa Anda perlu menghitung kalori & BMI?</h2>
               <p className="text-gray-700 leading-relaxed">
                 Menghitung kebutuhan kalori dan BMI selama kehamilan membantu Anda menjaga kesehatan ibu dan janin. Dengan data yang tepat, Anda dapat mengatur pola makan agar nutrisi terpenuhi tanpa berlebihan atau kekurangan.
               </p>
-            </div>
+            </motion.div>
 
-            <button
+            <motion.button
+              {...fadeVariant}
               onClick={handleCalculate}
               disabled={loadingCalc}
               className={`w-full py-4 rounded-xl font-semibold text-white text-lg sm:text-xl transition
@@ -108,14 +127,14 @@ export default function Calculator() {
               `}
             >
               {loadingCalc ? 'Menghitung...' : 'Hitung Kebutuhan Saya'}
-            </button>
+            </motion.button>
 
             {error && (
-              <p className="text-red-600 text-center font-semibold">{error}</p>
+              <motion.p {...fadeInDelayed} className="text-red-600 text-center font-semibold">{error}</motion.p>
             )}
 
             {result && (
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-inner space-y-6 text-purple-800">
+              <motion.div {...fadeInDelayed} className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-inner space-y-6 text-purple-800">
                 <h2 className="text-2xl font-bold text-center">Hasil Perhitungan</h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
@@ -125,8 +144,8 @@ export default function Calculator() {
                   </div>
 
                   <div className="bg-white rounded-xl p-6 shadow-md border border-purple-100">
-                    <p className="text-sm text-purple-500">Status Gizi</p>
-                    <p className="text-2xl font-semibold">{result.statusGizi || result.status}</p>
+                    <p className="text-sm text-purple-500">Status BMI</p>
+                    <p className="text-2xl font-semibold">{result.bmiStatus || result.status}</p>
                   </div>
 
                   <div className="bg-white rounded-xl p-6 shadow-md border border-purple-100">
@@ -148,11 +167,11 @@ export default function Calculator() {
                     </div>
                   )}
                 </div>
-              </div>
+              </motion.div>
             )}
-          </section>
+          </motion.section>
         )}
-      </main>
+      </motion.main>
     </SidebarLayout>
   );
 }

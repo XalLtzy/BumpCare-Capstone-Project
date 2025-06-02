@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Toaster, toast } from 'react-hot-toast';
+import { useEffect } from 'react';
 
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -13,6 +14,7 @@ import Records from './pages/Records';
 function PageTransition({ children }) {
   return (
     <motion.div
+      className="min-h-screen"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -30 }}
@@ -21,6 +23,14 @@ function PageTransition({ children }) {
       {children}
     </motion.div>
   );
+}
+
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [location]);
+  return null;
 }
 
 function AnimatedRoutes() {
@@ -44,6 +54,7 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <AnimatedRoutes />
       <Toaster
         position="top-right"

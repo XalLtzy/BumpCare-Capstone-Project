@@ -3,6 +3,8 @@ import SidebarLayout from '../components/SidebarLayout';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../presenters/userPresenter';
 import { fetchLatestResult } from '../presenters/resultPresenter';
+import { motion } from 'framer-motion';
+import { fadeVariant, slideUpVariant, fadeInDelayed } from '../animations/variants';
 
 const foodRecommendations = [
   { id: 1, name: 'Salmon Panggang', description: 'Sumber protein dan omega-3 yang baik.', emoji: '🐟' },
@@ -23,41 +25,52 @@ export default function Dashboard() {
       .then(data => {
         setProfile(data);
         setLoading(false);
+
+        const isComplete = data.age && data.weight && data.height && data.trimester;
+        if (isComplete) {
+          fetchLatestResult()
+            .then(({ data: resultData, error }) => {
+              setBmiData(!error ? resultData : null);
+            });
+        } else {
+          setBmiData(null);
+        }
       })
       .catch(() => {
         setProfile(null);
         setLoading(false);
       });
-
-    fetchLatestResult()
-      .then(({ data, error }) => {
-        if (!error) {
-          setBmiData(data);
-        } else {
-          console.error('Gagal mengambil hasil terbaru:', error);
-          setBmiData(null);
-        }
-      });
   }, []);
+
+  const isProfileComplete = profile &&
+    profile.age && profile.weight && profile.height && profile.trimester;
+
+  // CSS class untuk optimasi GPU accelerate animasi
+  const animatedClass = "will-change-transform will-change-opacity";
 
   if (loading) {
     return (
       <SidebarLayout>
-        <div className="flex justify-center items-center min-h-screen">
-          <p className="text-lg text-gray-500">Loading...</p>
+        <div className="flex flex-col justify-center items-center min-h-screen bg-[#FFF2EB] text-center px-4">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-[#AC1754] border-opacity-50 mb-6"></div>
+          <p className="text-lg md:text-xl font-medium text-[#AC1754]">Memuat data, harap tunggu...</p>
         </div>
       </SidebarLayout>
     );
   }
 
-  const isProfileComplete = profile &&
-    profile.age && profile.weight && profile.height && profile.trimester;
-
   return (
     <SidebarLayout>
-      <main className="min-h-screen bg-gradient-to-tr from-purple-50 to-purple-100 p-4 md:p-8">
+      {/* Main container animasi hanya saat loading selesai */}
+      <motion.main
+        {...fadeVariant}
+        className={`px-4 pb-10 ${animatedClass}`}
+      >
         {!isProfileComplete ? (
-          <section className="max-w-xl mx-auto bg-white p-6 md:p-10 rounded-2xl shadow-lg text-center">
+          <motion.section
+            {...slideUpVariant}
+            className={`max-w-xl mx-auto bg-[#FFDCDC] p-6 md:p-10 rounded-2xl shadow-lg text-center mt-24 md:mt-10 ${animatedClass}`}
+          >
             <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-purple-700">
               Profil Anda belum lengkap
             </h2>
@@ -70,19 +83,22 @@ export default function Dashboard() {
             >
               Isi Profil Sekarang
             </button>
-          </section>
+          </motion.section>
         ) : (
-          <section className="max-w-4xl mx-auto space-y-8 md:space-y-10">
+          <section className="max-w-4xl mx-auto space-y-8 md:space-y-10 mt-10">
             {/* Profil User */}
-            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8">
-              <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full bg-purple-200 flex items-center justify-center text-5xl md:text-6xl text-purple-700 font-bold select-none">
-                {profile.name?.[0].toUpperCase() || 'U'}
+            <motion.div
+              {...slideUpVariant}
+              className={`bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8 flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-8 ${animatedClass}`}
+            >
+              <div className="flex-shrink-0 w-24 h-24 md:w-28 md:h-28 rounded-full bg-pink-200 flex items-center justify-center text-5xl md:text-6xl text-[#AC1754] font-bold select-none">
+                {profile.name?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="flex-grow text-center md:text-left">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-purple-800 mb-2">
+                <h1 className="text-2xl md:text-3xl font-extrabold text-[#AC1754] mb-2">
                   Halo, {profile.name} 👋
                 </h1>
-                <p className="text-purple-600 font-semibold text-base md:text-lg">
+                <p className="text-[#E53888] font-semibold text-base md:text-lg">
                   Trimester ke-{profile.trimester} &nbsp;|&nbsp; Usia: {profile.age} tahun
                 </p>
                 <div className="mt-3 text-sm md:text-base text-gray-700 space-y-1">
@@ -91,52 +107,47 @@ export default function Dashboard() {
                 </div>
                 <div className="mt-4 text-sm md:text-base text-gray-700 space-y-1">
                   <p><span className="font-semibold">Aktivitas Harian:</span> {profile.activity_level || '-'}</p>
-                  <p><span className="font-semibold">Riwayat Medis:</span> {profile.Medical_history || '-'}</p>
+                  <p><span className="font-semibold">Riwayat Medis:</span> {profile.medical_history || '-'}</p>
                 </div>
               </div>
               <button
                 onClick={() => navigate('/profile')}
-                className="self-start md:self-center bg-purple-700 text-white rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-md hover:bg-purple-800 transition"
+                className="self-start md:self-center bg-[#AC1754] text-[#FFDCDC] rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center shadow-md hover:bg-pink-800 transition"
                 aria-label="Edit Profil"
                 title="Edit Profil"
               >
-                👤
+                ✏️
               </button>
-            </div>
+            </motion.div>
 
             {/* Hasil Perhitungan Gizi */}
-            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8">
-              <h2 className="text-xl md:text-2xl font-bold text-purple-700 mb-4 md:mb-6">Hasil Perhitungan Gizi</h2>
+            <motion.div
+              {...fadeInDelayed}
+              className={`bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8 ${animatedClass}`}
+            >
+              <h2 className="text-xl md:text-2xl font-bold text-[#AC1754] mb-4 md:mb-6">Hasil Perhitungan Gizi</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center text-sm md:text-base">
-                <div className="bg-purple-50 rounded-xl p-4 md:p-6 shadow-inner">
-                  <p className="text-3xl md:text-4xl font-extrabold text-purple-600">{bmiData?.bmi || '-'}</p>
-                  <p className="mt-1 font-semibold text-gray-700">BMI</p>
-                  <p className="text-xs mt-1 text-gray-500">{bmiData?.status || 'Belum dihitung'}</p>
-                </div>
-                <div className="bg-purple-50 rounded-xl p-4 md:p-6 shadow-inner">
-                  <p className="text-3xl md:text-4xl font-extrabold text-purple-600">
-                    {bmiData?.calorieNeed ? `${bmiData.calorieNeed} kkal` : '-'}
-                  </p>
-                  <p className="mt-1 font-semibold text-gray-700">Kebutuhan Kalori</p>
-                </div>
-                <div className="bg-purple-50 rounded-xl p-4 md:p-6 shadow-inner">
-                  <p className="text-3xl md:text-4xl font-extrabold text-purple-600">
-                    {bmiData?.proteinNeed ? `${bmiData.proteinNeed} g` : '-'}
-                  </p>
-                  <p className="mt-1 font-semibold text-gray-700">Kebutuhan Protein</p>
-                </div>
-                <div className="bg-purple-50 rounded-xl p-4 md:p-6 shadow-inner">
-                  <p className="text-3xl md:text-4xl font-extrabold text-purple-600">
-                    {bmiData?.fatNeed ? `${bmiData.fatNeed} g` : '-'}
-                  </p>
-                  <p className="mt-1 font-semibold text-gray-700">Kebutuhan Lemak</p>
-                </div>
+                {[ 
+                  { label: 'BMI', value: bmiData?.bmi || '-', subtitle: bmiData?.bmiStatus || 'Belum dihitung' },
+                  { label: 'Kebutuhan Kalori', value: bmiData?.calorieNeed ? `${bmiData.calorieNeed} kkal` : '-' },
+                  { label: 'Kebutuhan Protein', value: bmiData?.proteinNeed ? `${bmiData.proteinNeed} g` : '-' },
+                  { label: 'Kebutuhan Lemak', value: bmiData?.fatNeed ? `${bmiData.fatNeed} g` : '-' },
+                ].map((item, index) => (
+                  <div key={index} className="rounded-xl p-4 md:p-6 shadow-inner bg-[#FFF2EB]">
+                    <p className="text-3xl md:text-4xl font-extrabold text-[#AC1754]">{item.value}</p>
+                    <p className="mt-1 font-semibold text-gray-700">{item.label}</p>
+                    {item.subtitle && <p className="text-xs mt-1 text-gray-500">{item.subtitle}</p>}
+                  </div>
+                ))}
               </div>
-            </div>
+            </motion.div>
 
             {/* Rekomendasi Makanan */}
-            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-8">
-              <h2 className="text-xl md:text-2xl font-bold text-purple-700 mb-4 md:mb-6">Rekomendasi Makanan</h2>
+            <motion.div
+              {...fadeInDelayed}
+              className={`bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8 ${animatedClass}`}
+            >
+              <h2 className="text-xl md:text-2xl font-bold text-[#AC1754] mb-4 md:mb-6">Rekomendasi Makanan</h2>
               <p className="mb-4 md:mb-6 text-gray-600 text-sm md:text-base max-w-xl">
                 Berdasarkan hasil perhitungan gizi terakhir, berikut beberapa rekomendasi makanan yang dapat membantu Anda menjaga kesehatan dan memenuhi kebutuhan nutrisi.
               </p>
@@ -144,19 +155,19 @@ export default function Dashboard() {
                 {foodRecommendations.map(food => (
                   <div
                     key={food.id}
-                    className="bg-purple-50 hover:bg-purple-100 cursor-pointer rounded-xl p-4 shadow-md transition-transform transform hover:-translate-y-1"
+                    className="cursor-pointer rounded-xl p-4 shadow-md transition-transform transform hover:-translate-y-1 bg-[#FFF2EB]"
                     title={food.description}
                   >
                     <div className="text-4xl md:text-5xl mb-2 md:mb-3 select-none">{food.emoji}</div>
-                    <h3 className="font-semibold text-base md:text-lg text-purple-700 mb-1">{food.name}</h3>
+                    <h3 className="font-semibold text-base md:text-lg text-[#AC1754] mb-1">{food.name}</h3>
                     <p className="text-xs md:text-sm text-gray-600">{food.description}</p>
                   </div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </section>
         )}
-      </main>
+      </motion.main>
     </SidebarLayout>
   );
 }

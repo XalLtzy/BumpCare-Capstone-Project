@@ -1,25 +1,9 @@
-import api from '../models/api';
+import calculatorModel from '../models/calculatorModel';
 
 export async function calculateNutrition(payload) {
-  try {
-    const res = await api.post('/calculate', payload); 
-    return { data: res.data.data, error: null };
-  } catch (err) {
-    return {
-      data: null,
-      error: err.response?.data?.message || 'Terjadi kesalahan saat menghitung nutrisi',
-    };
-  }
+  return await calculatorModel.calculateNutrition(payload);
 }
 
 export async function fetchRecords() {
-  try {
-    const res = await api.get('/records');
-    return { data: res.data.data, error: null };
-  } catch (err) {
-    return {
-      data: null,
-      error: err.response?.data?.message || 'Gagal memuat riwayat',
-    };
-  }
+  return await calculatorModel.fetchRecords();
 }
