@@ -6,6 +6,7 @@ import { Menu, X } from 'lucide-react';
 
 import heroImage from '../assets/images/Bumil.png';
 import logo from '../assets/images/Logo.png';
+import tentangLogo from '../assets/images/Logo2.png';
 
 const pageVariants = {
   initial: { opacity: 0, y: 40 },
@@ -203,20 +204,30 @@ export default function Home() {
       <motion.section
         id="tentang"
         className="bg-[#FFF2EB] py-20 min-h-screen flex items-center justify-center"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <h3 className="text-4xl font-bold mb-6">Tentang Kami</h3>
-            <p className="text-lg text-gray-700 mb-8 leading-relaxed">
-              BumpCare adalah aplikasi pendamping kehamilan berbasis web untuk mendukung kesehatan ibu dan bayi
-              melalui pemantauan gizi personal serta fitur-fitur pintar yang menyesuaikan kebutuhan tiap trimester.
-            </p>
-          </div>
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+>
+        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center md:items-start gap-12 max-w-5xl">
+        {/* Left Image */}
+        <div className="md:w-1/2 flex justify-center md:justify-start">
+           <img
+              src={tentangLogo} 
+              alt="Logo Bumpcare"
+              className="w-64 md:w-full max-w-sm rounded-lg shadow-lg"
+           />
         </div>
+
+        {/* Right Content */}
+        <div className="md:w-1/2 text-center md:text-left">
+          <h3 className="text-5xl font-extrabold text mb-6 drop-shadow-md">Apa itu Bumpcare?</h3>
+            <p className="text-xl text-gray-800 mb-8 leading-relaxed tracking-wide">
+               BumpCare adalah aplikasi pendamping kehamilan berbasis web yang dirancang khusus untuk mendukung kesehatan ibu dan bayi.  
+               Dengan pemantauan gizi personal dan fitur-fitur pintar yang disesuaikan dengan kebutuhan tiap trimester, kami membantu perjalanan kehamilan Anda menjadi lebih aman dan nyaman.
+            </p>
+        </div>
+       </div>
       </motion.section>
 
       {/* Testimoni Section */}
