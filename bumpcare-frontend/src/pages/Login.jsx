@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../presenters/authPresenter';
 import { motion } from 'framer-motion';
-import { toast } from 'react-hot-toast'; 
+import { toast } from 'react-hot-toast';
 import {
   fadeVariant,
   slideUpVariant,
@@ -21,12 +21,12 @@ export default function Login() {
     setErrorMsg('');
     try {
       await loginUser({ email, password });
-      toast.success('Berhasil login!'); 
+      toast.success('Berhasil login!');
       navigate('/dashboard');
     } catch (err) {
       const msg = err.response?.data?.message || 'Login gagal';
       setErrorMsg(msg);
-      toast.error(msg); 
+      toast.error(msg);
     }
   };
 
@@ -61,6 +61,7 @@ export default function Login() {
         {/* Kanan */}
         <motion.div className="w-full md:w-1/2 p-12 md:p-16" {...slideUpVariant}>
           <h2 className="text-3xl font-bold mb-8 text-center">Masuk</h2>
+
           {errorMsg && (
             <div className="text-red-500 text-sm text-center mb-4">
               {errorMsg}
@@ -69,20 +70,30 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm mb-1">Email</label>
+              <label htmlFor="email" className="block text-sm mb-1">
+                Email
+              </label>
               <input
+                id="email"
+                name="email"
                 type="email"
                 required
+                autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"
               />
             </div>
             <div>
-              <label className="block text-sm mb-1">Kata Sandi</label>
+              <label htmlFor="password" className="block text-sm mb-1">
+                Kata Sandi
+              </label>
               <input
+                id="password"
+                name="password"
                 type="password"
                 required
+                autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"

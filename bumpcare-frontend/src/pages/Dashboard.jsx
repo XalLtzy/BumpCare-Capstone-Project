@@ -99,15 +99,15 @@ export default function Dashboard() {
                   Halo, {profile.name} 👋
                 </h1>
                 <p className="text-[#E53888] font-semibold text-base md:text-lg">
-                  Trimester ke-{profile.trimester} &nbsp;|&nbsp; Usia: {profile.age} tahun
+                  Trimester ke-{profile.trimester} &nbsp;|&nbsp; Usia Bunda: {profile.age} tahun
                 </p>
                 <div className="mt-3 text-sm md:text-base text-gray-700 space-y-1">
-                  <p><span className="font-semibold">Berat Badan:</span> {profile.weight} kg</p>
-                  <p><span className="font-semibold">Tinggi Badan:</span> {profile.height} cm</p>
+                  <p><span className="font-semibold">Berat Badan Bunda:</span> {profile.weight} kg</p>
+                  <p><span className="font-semibold">Tinggi Badan Bunda:</span> {profile.height} cm</p>
                 </div>
                 <div className="mt-4 text-sm md:text-base text-gray-700 space-y-1">
-                  <p><span className="font-semibold">Aktivitas Harian:</span> {profile.activity_level || '-'}</p>
-                  <p><span className="font-semibold">Riwayat Medis:</span> {profile.medical_history || '-'}</p>
+                  <p><span className="font-semibold">Aktivitas Harian Bunda:</span> {profile.activity_level || '-'}</p>
+                  <p><span className="font-semibold">Riwayat Medis Bunda:</span> {profile.medical_history || '-'}</p>
                 </div>
               </div>
               <button
@@ -126,14 +126,14 @@ export default function Dashboard() {
               className={`bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8 ${animatedClass}`}
             >
               <h2 className="text-xl md:text-2xl font-bold text-[#AC1754] mb-4 md:mb-6">Hasil Perhitungan Gizi</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center text-sm md:text-base">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center text-sm md:text-base min-w-0">
                 {[ 
                   { label: 'BMI', value: bmiData?.bmi || '-', subtitle: bmiData?.bmiStatus || 'Belum dihitung' },
                   { label: 'Kebutuhan Kalori', value: bmiData?.calorieNeed ? `${bmiData.calorieNeed} kkal` : '-' },
                   { label: 'Kebutuhan Protein', value: bmiData?.proteinNeed ? `${bmiData.proteinNeed} g` : '-' },
                   { label: 'Kebutuhan Lemak', value: bmiData?.fatNeed ? `${bmiData.fatNeed} g` : '-' },
                 ].map((item, index) => (
-                  <div key={index} className="rounded-xl p-4 md:p-6 shadow-inner bg-[#FFF2EB]">
+                  <div key={index} className="rounded-xl p-4 md:p-6 shadow-inner bg-[#FFF2EB] min-w-0 break-words">
                     <p className="text-3xl md:text-4xl font-extrabold text-[#AC1754]">{item.value}</p>
                     <p className="mt-1 font-semibold text-gray-700">{item.label}</p>
                     {item.subtitle && <p className="text-xs mt-1 text-gray-500">{item.subtitle}</p>}

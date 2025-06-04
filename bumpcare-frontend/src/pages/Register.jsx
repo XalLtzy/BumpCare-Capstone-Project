@@ -50,9 +50,12 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm mb-1">Nama Lengkap</label>
+              <label htmlFor="name" className="block text-sm mb-1">Nama Lengkap</label>
               <input
+                id="name"
+                name="name"
                 type="text"
+                autoComplete="name"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -60,9 +63,12 @@ export default function Register() {
               />
             </div>
             <div>
-              <label className="block text-sm mb-1">Email</label>
+              <label htmlFor="email" className="block text-sm mb-1">Email</label>
               <input
+                id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -70,9 +76,12 @@ export default function Register() {
               />
             </div>
             <div>
-              <label className="block text-sm mb-1">Kata Sandi</label>
+              <label htmlFor="password" className="block text-sm mb-1">Kata Sandi</label>
               <input
+                id="password"
+                name="password"
                 type="password"
+                autoComplete="new-password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
