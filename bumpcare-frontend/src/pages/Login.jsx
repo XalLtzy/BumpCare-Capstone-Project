@@ -81,7 +81,7 @@ export default function Login() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-[#AC1754]"
               />
             </div>
             <div>
@@ -96,12 +96,12 @@ export default function Login() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-4 py-3 bg-[#FFF2EB] rounded-md outline-[#AC1754]"
               />
             </div>
             <button
               type="submit"
-              className="w-full bg-black text-white py-3 rounded-full hover:bg-gray-800 text-lg"
+              className="w-full bg-[#AC1754] text-white py-2 rounded-md hover:bg-[#E53888]"
             >
               Masuk
             </button>

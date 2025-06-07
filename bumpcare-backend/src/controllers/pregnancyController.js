@@ -3,9 +3,43 @@ const pool = require('../models/db');
 
 const classifyBMI = (bmi) => {
   if (bmi < 18.5) return 'Kurus';
-  if (bmi >= 18.5 && bmi < 25) return 'Normal';
-  if (bmi >= 25 && bmi < 30) return 'Gemuk';
+  if (bmi < 25) return 'Normal';
+  if (bmi < 30) return 'Gemuk';
   return 'Obesitas';
+};
+
+const calculateNeeds = (prePregnancyWeight, currentWeight, trimester, activityLevel) => {
+  const baseCaloriePerKg = 25; 
+  let calorieNeed = prePregnancyWeight * baseCaloriePerKg;
+
+  if (trimester === 2) calorieNeed += 340;
+  else if (trimester === 3) calorieNeed += 452;
+
+  switch ((activityLevel || '').toLowerCase()) {
+    case 'rendah':
+      calorieNeed *= 1.2;
+      break;
+    case 'sedang':
+      calorieNeed *= 1.5;
+      break;
+    case 'tinggi':
+      calorieNeed *= 1.7;
+      break;
+    default:
+      calorieNeed *= 1.3; 
+  }
+
+  calorieNeed = Math.round(calorieNeed);
+
+  const baseProteinPerKg = 0.8;
+  let proteinNeed = currentWeight * baseProteinPerKg;
+  if (trimester === 2) proteinNeed += 6;
+  if (trimester === 3) proteinNeed += 10;
+  proteinNeed = +proteinNeed.toFixed(2);
+
+  const fatNeed = +((calorieNeed * 0.25) / 9).toFixed(2);
+
+  return { calorieNeed, proteinNeed, fatNeed };
 };
 
 const calculateHandler = async (request, h) => {
@@ -14,31 +48,22 @@ const calculateHandler = async (request, h) => {
     return h.response({ status: 'fail', message: error.message }).code(400);
   }
 
-  const { age, weight, height, trimester } = request.payload;
+  const { age, weight, height, trimester, prePregnancyWeight, activity_level } = request.payload;
   const userId = request.auth.credentials.id;
 
   const heightInMeters = height / 100;
-  const bmi = +(weight / (heightInMeters * heightInMeters)).toFixed(2);
+  const bmi = +(weight / (heightInMeters ** 2)).toFixed(2);
   const bmiStatus = classifyBMI(bmi);
-
   const trimesterInt = parseInt(trimester);
-  let calorieNeed = 2200;
-  if (trimesterInt === 2) calorieNeed += 300;
-  if (trimesterInt === 3) calorieNeed += 450;
 
-  let proteinNeed = weight * 0.88;
-  if (trimesterInt === 2) proteinNeed += 6;
-  if (trimesterInt === 3) proteinNeed += 10;
-  proteinNeed = +proteinNeed.toFixed(2);
-
-  const fatNeed = +((calorieNeed * 0.25) / 9).toFixed(2);
+  const { calorieNeed, proteinNeed, fatNeed } = calculateNeeds(prePregnancyWeight, weight, trimesterInt, activity_level);
 
   try {
     await pool.query(
       `INSERT INTO pregnancy_records 
-        (user_id, age, weight, height, trimester, bmi, bmi_status, calorie_needs, protein_needs, fat_needs)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      [userId, age, weight, height, trimester, bmi, bmiStatus, calorieNeed, proteinNeed, fatNeed]
+        (user_id, age, pre_pregnancy_weight, weight, height, trimester, bmi, bmi_status, calorie_needs, protein_needs, fat_needs, activity_level)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+      [userId, age, prePregnancyWeight, weight, height, trimester, bmi, bmiStatus, calorieNeed, proteinNeed, fatNeed, activity_level]
     );
 
     return h.response({
@@ -56,7 +81,11 @@ const getRecordsHandler = async (request, h) => {
 
   try {
     const result = await pool.query(
-      'SELECT id, age, weight, height, trimester, bmi, bmi_status, calorie_needs, protein_needs, fat_needs, created_at FROM pregnancy_records WHERE user_id = $1 ORDER BY created_at DESC',
+      `SELECT id, age, pre_pregnancy_weight, weight, height, trimester, bmi, bmi_status, 
+              calorie_needs, protein_needs, fat_needs, activity_level, created_at 
+       FROM pregnancy_records 
+       WHERE user_id = $1 
+       ORDER BY created_at DESC`,
       [userId]
     );
 
@@ -76,7 +105,9 @@ const deleteRecordHandler = async (request, h) => {
 
   try {
     const result = await pool.query(
-      'DELETE FROM pregnancy_records WHERE id = $1 AND user_id = $2 RETURNING *',
+      `DELETE FROM pregnancy_records 
+       WHERE id = $1 AND user_id = $2 
+       RETURNING *`,
       [id, userId]
     );
 
@@ -93,34 +124,30 @@ const deleteRecordHandler = async (request, h) => {
 
 const updateRecordHandler = async (request, h) => {
   const { error } = pregnancyInputSchema.validate(request.payload);
-  if (error) return h.response({ status: 'fail', message: error.message }).code(400);
+  if (error) {
+    return h.response({ status: 'fail', message: error.message }).code(400);
+  }
 
   const userId = request.auth.credentials.id;
   const { id } = request.params;
-  const { age, weight, height, trimester } = request.payload;
+  const { age, weight, height, trimester, prePregnancyWeight, activity_level } = request.payload;
 
   const heightInMeters = height / 100;
-  const bmi = +(weight / (heightInMeters * heightInMeters)).toFixed(2);
+  const bmi = +(weight / (heightInMeters ** 2)).toFixed(2);
   const bmiStatus = classifyBMI(bmi);
-
   const trimesterInt = parseInt(trimester);
-  let calorieNeed = 2200;
-  if (trimesterInt === 2) calorieNeed += 300;
-  if (trimesterInt === 3) calorieNeed += 450;
 
-  let proteinNeed = weight * 0.88;
-  if (trimesterInt === 2) proteinNeed += 6;
-  if (trimesterInt === 3) proteinNeed += 10;
-  proteinNeed = +proteinNeed.toFixed(2);
-
-  const fatNeed = +((calorieNeed * 0.25) / 9).toFixed(2);
+  const { calorieNeed, proteinNeed, fatNeed } = calculateNeeds(prePregnancyWeight, weight, trimesterInt, activity_level);
 
   try {
     const result = await pool.query(
       `UPDATE pregnancy_records 
-       SET age = $1, weight = $2, height = $3, trimester = $4, bmi = $5, bmi_status = $6, calorie_needs = $7, protein_needs = $8, fat_needs = $9
-       WHERE id = $10 AND user_id = $11 RETURNING *`,
-      [age, weight, height, trimester, bmi, bmiStatus, calorieNeed, proteinNeed, fatNeed, id, userId]
+       SET age = $1, weight = $2, height = $3, trimester = $4, 
+           bmi = $5, bmi_status = $6, calorie_needs = $7, 
+           protein_needs = $8, fat_needs = $9, pre_pregnancy_weight = $10, activity_level = $11
+       WHERE id = $12 AND user_id = $13 
+       RETURNING *`,
+      [age, weight, height, trimester, bmi, bmiStatus, calorieNeed, proteinNeed, fatNeed, prePregnancyWeight, activity_level, id, userId]
     );
 
     if (result.rowCount === 0) {
@@ -140,9 +167,10 @@ const updateRecordHandler = async (request, h) => {
 
 const getLatestResultHandler = async (request, h) => {
   const userId = request.auth.credentials.id;
+
   try {
     const result = await pool.query(
-      `SELECT bmi, bmi_status, calorie_needs, protein_needs, fat_needs, created_at 
+      `SELECT bmi, bmi_status, calorie_needs, protein_needs, fat_needs, activity_level, created_at 
        FROM pregnancy_records 
        WHERE user_id = $1 
        ORDER BY created_at DESC 
@@ -164,6 +192,7 @@ const getLatestResultHandler = async (request, h) => {
         calorieNeed: row.calorie_needs,
         proteinNeed: row.protein_needs,
         fatNeed: row.fat_needs,
+        activityLevel: row.activity_level,
         createdAt: row.created_at
       }
     }).code(200);

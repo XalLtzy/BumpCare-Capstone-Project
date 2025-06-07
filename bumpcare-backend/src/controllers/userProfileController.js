@@ -6,7 +6,7 @@ const getUserProfile = async (request, h) => {
 
   try {
     const result = await pool.query(
-      `SELECT u.name, u.email, p.age, p.weight, p.height, p.trimester, p.activity_level, p.medical_history
+      `SELECT u.name, u.email, p.age, p.weight, p.pre_pregnancy_weight, p.height, p.trimester, p.activity_level
        FROM users u
        LEFT JOIN profiles p ON u.id = p.user_id
        WHERE u.id = $1`,
@@ -22,10 +22,10 @@ const getUserProfile = async (request, h) => {
     const isProfileEmpty =
       profile.age === null &&
       profile.weight === null &&
+      profile.pre_pregnancy_weight === null &&
       profile.height === null &&
       profile.trimester === null &&
-      profile.activity_level === null &&
-      profile.medical_history === null;
+      profile.activity_level === null;
 
     if (isProfileEmpty) {
       return h.response({
@@ -56,22 +56,23 @@ const updateUserProfile = async (request, h) => {
       .code(400);
   }
 
-  const { age, weight, height, trimester, activity_level, medical_history } = request.payload;
+  const { age, weight, pre_pregnancy_weight, height, trimester, activity_level } = request.payload;
 
   try {
     const check = await pool.query('SELECT id FROM profiles WHERE user_id = $1', [userId]);
 
     if (check.rowCount === 0) {
       await pool.query(
-        `INSERT INTO profiles (user_id, age, weight, height, trimester, activity_level, medical_history)
+        `INSERT INTO profiles (user_id, age, weight, pre_pregnancy_weight, height, trimester, activity_level)
          VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-        [userId, age, weight, height, trimester, activity_level, medical_history]
+        [userId, age, weight, pre_pregnancy_weight, height, trimester, activity_level]
       );
     } else {
       await pool.query(
-        `UPDATE profiles SET age=$1, weight=$2, height=$3, trimester=$4, activity_level=$5, medical_history=$6, updated_at=NOW()
+        `UPDATE profiles 
+         SET age=$1, weight=$2, pre_pregnancy_weight=$3, height=$4, trimester=$5, activity_level=$6, updated_at=NOW()
          WHERE user_id=$7`,
-        [age, weight, height, trimester, activity_level, medical_history, userId]
+        [age, weight, pre_pregnancy_weight, height, trimester, activity_level, userId]
       );
     }
 

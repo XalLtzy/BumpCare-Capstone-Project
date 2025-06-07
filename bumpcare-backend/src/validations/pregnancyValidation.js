@@ -10,6 +10,14 @@ const pregnancyInputSchema = Joi.object({
       'any.required': 'Umur wajib diisi'
     }),
 
+  prePregnancyWeight: Joi.number().min(30).max(200)
+    .optional()
+    .messages({
+      'number.base': 'Berat badan sebelum kehamilan harus berupa angka',
+      'number.min': 'Berat badan sebelum kehamilan minimal 30 kg',
+      'number.max': 'Berat badan sebelum kehamilan maksimal 200 kg'
+    }),
+
   weight: Joi.number().min(30).max(200)
     .required()
     .messages({
@@ -33,7 +41,14 @@ const pregnancyInputSchema = Joi.object({
     .messages({
       'any.only': 'Trimester hanya bisa bernilai 1, 2, atau 3',
       'any.required': 'Trimester wajib diisi'
-    })
+    }),
+
+  activity_level: Joi.string().valid('Rendah', 'Sedang', 'Tinggi', 'rendah', 'sedang', 'tinggi')
+    .optional()
+    .messages({
+      'string.base': 'Level aktivitas harus berupa teks',
+      'any.only': 'Level aktivitas hanya bisa "rendah", "sedang", atau "tinggi"'
+    }),
 });
 
 module.exports = { pregnancyInputSchema };

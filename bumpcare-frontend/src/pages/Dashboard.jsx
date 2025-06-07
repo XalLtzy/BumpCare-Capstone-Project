@@ -45,7 +45,6 @@ export default function Dashboard() {
   const isProfileComplete = profile &&
     profile.age && profile.weight && profile.height && profile.trimester;
 
-  // CSS class untuk optimasi GPU accelerate animasi
   const animatedClass = "will-change-transform will-change-opacity";
 
   if (loading) {
@@ -61,7 +60,6 @@ export default function Dashboard() {
 
   return (
     <SidebarLayout>
-      {/* Main container animasi hanya saat loading selesai */}
       <motion.main
         {...fadeVariant}
         className={`px-4 pb-10 ${animatedClass}`}
@@ -71,15 +69,15 @@ export default function Dashboard() {
             {...slideUpVariant}
             className={`max-w-xl mx-auto bg-[#FFDCDC] p-6 md:p-10 rounded-2xl shadow-lg text-center mt-24 md:mt-10 ${animatedClass}`}
           >
-            <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-purple-700">
+            <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-[#AC1754]">
               Profil Anda belum lengkap
             </h2>
             <p className="mb-6 md:mb-8 text-gray-600 text-sm md:text-base">
               Silakan lengkapi data pribadi Anda terlebih dahulu untuk mulai menggunakan aplikasi.
             </p>
-            <button
+             <button
               onClick={() => navigate('/profile')}
-              className="bg-purple-600 text-white px-6 py-2 md:px-8 md:py-3 rounded-full text-base md:text-lg font-medium hover:bg-purple-700 transition"
+              className="inline-block bg-[#AC1754] hover:bg-[#E53888] text-white px-8 py-3 rounded-full text-lg font-medium transition"
             >
               Isi Profil Sekarang
             </button>
@@ -102,12 +100,12 @@ export default function Dashboard() {
                   Trimester ke-{profile.trimester} &nbsp;|&nbsp; Usia Bunda: {profile.age} tahun
                 </p>
                 <div className="mt-3 text-sm md:text-base text-gray-700 space-y-1">
-                  <p><span className="font-semibold">Berat Badan Bunda:</span> {profile.weight} kg</p>
+                  <p><span className="font-semibold">Berat Badan Bunda Sebelum Kehamilan:</span> {profile.pre_pregnancy_weight ?? '-'} kg</p>
+                  <p><span className="font-semibold">Berat Badan Bunda Sekarang:</span> {profile.weight} kg</p>
                   <p><span className="font-semibold">Tinggi Badan Bunda:</span> {profile.height} cm</p>
                 </div>
                 <div className="mt-4 text-sm md:text-base text-gray-700 space-y-1">
                   <p><span className="font-semibold">Aktivitas Harian Bunda:</span> {profile.activity_level || '-'}</p>
-                  <p><span className="font-semibold">Riwayat Medis Bunda:</span> {profile.medical_history || '-'}</p>
                 </div>
               </div>
               <button

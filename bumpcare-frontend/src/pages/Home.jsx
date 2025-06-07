@@ -78,7 +78,7 @@ export default function Home() {
                   smooth={true}
                   duration={600}
                   offset={isMobile ? headerOffsetMobile : headerOffsetDesktop}
-                  className="cursor-pointer hover:text-purple-600 transition"
+                  className="cursor-pointer hover:text-[#AC1754] transition"
                 >
                   {id.charAt(0).toUpperCase() + id.slice(1)}
                 </ScrollLink>
@@ -270,30 +270,31 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container max-w-lg w-full">
-          <h3 className="text-4xl font-bold mb-6 text-center">Kontak Kami</h3>
-          <form className="space-y-6 bg-white p-8 rounded-xl shadow-lg">
-            <input
-              type="text"
-              placeholder="Nama"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <textarea
-              placeholder="Pesan"
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-            <button
-              type="submit"
-              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-md transition"
-            >
-              Kirim Pesan
-            </button>
-          </form>
+        <h3 className="text-4xl font-bold mb-6 text-center">Kontak Kami</h3>
+        <form className="space-y-6 bg-[#FFDCDC] p-8 rounded-xl shadow-lg">
+          <input
+            type="text"
+            placeholder="Nama"
+            className="w-full px-4 py-3 border !border-gray-400 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-[#AC1754]"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-3 border !border-gray-400 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-[#AC1754]"
+          />
+          <textarea
+            placeholder="Pesan"
+            rows={4}
+            className="w-full px-4 py-3 border !border-gray-400 rounded-md bg-transparent focus:outline-none focus:ring-2 focus:ring-[#AC1754]"
+          />
+          <button
+            type="submit"
+            className="w-full py-4 rounded-xl bg-[#AC1754] hover:bg-[#E53888] text-white font-semibold rounded-md transition"
+          >
+            Kirim Pesan
+          </button>
+        </form>
+
 
           {/* Sosial Media */}
           <div className="mt-12 flex justify-center gap-8">

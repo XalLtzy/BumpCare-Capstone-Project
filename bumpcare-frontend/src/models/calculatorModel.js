@@ -24,6 +24,31 @@ const calculatorModel = {
       };
     }
   },
+
+  async deleteRecordById(id) {
+    try {
+      const res = await api.delete(`/records/${id}`);
+      return { data: res.data.data || null, error: null, success: true };
+    } catch (err) {
+      return {
+        data: null,
+        error: err.response?.data?.message || 'Gagal menghapus riwayat',
+        success: false,
+      };
+    }
+  },
+
+  async fetchLatestResult() {
+    try {
+      const res = await api.get('/latest-result');
+      return { data: res.data.data || null, error: null };
+    } catch (err) {
+      return {
+        data: null,
+        error: err.response?.data?.message || 'Gagal memuat hasil terbaru',
+      };
+    }
+  },
 };
 
 export default calculatorModel;

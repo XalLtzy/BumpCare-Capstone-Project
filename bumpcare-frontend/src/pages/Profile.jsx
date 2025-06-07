@@ -8,10 +8,10 @@ export default function ProfileTwoColumn() {
   const [form, setForm] = useState({
     age: '',
     weight: '',
+    pre_pregnancy_weight: '',
     height: '',
     trimester: '',
     activity_level: '',
-    medical_history: '',
   });
   const navigate = useNavigate();
 
@@ -22,10 +22,10 @@ export default function ProfileTwoColumn() {
           setForm({
             age: data.age ?? '',
             weight: data.weight ?? '',
+            pre_pregnancy_weight: data.pre_pregnancy_weight ?? '',
             height: data.height ?? '',
             trimester: data.trimester ?? '',
             activity_level: data.activity_level ?? '',
-            medical_history: data.medical_history ?? '',
           });
         }
       })
@@ -63,10 +63,10 @@ export default function ProfileTwoColumn() {
         </p>
         <ul className="list-disc list-inside text-[#AC1754] space-y-2 text-sm">
           <li>Usia Anda saat ini</li>
-          <li>Berat dan tinggi badan</li>
+          <li>Berat badan saat ini dan sebelum hamil</li>
+          <li>Tinggi badan</li>
           <li>Trimester kehamilan</li>
           <li>Aktivitas harian</li>
-          <li>Riwayat medis</li>
         </ul>
       </motion.div>
 
@@ -81,7 +81,8 @@ export default function ProfileTwoColumn() {
         {/* Input Fields */}
         {[
           { id: 'age', label: 'Usia (tahun)', type: 'number', min: 14, max: 50 },
-          { id: 'weight', label: 'Berat Badan (kg)', type: 'number', min: 30, max: 200, step: '0.1' },
+          { id: 'weight', label: 'Berat Badan Saat Ini (kg)', type: 'number', min: 30, max: 200, step: '0.1' },
+          { id: 'pre_pregnancy_weight', label: 'Berat Badan Sebelum Hamil (kg)', type: 'number', min: 30, max: 200, step: '0.1' },
           { id: 'height', label: 'Tinggi Badan (cm)', type: 'number', min: 100, max: 220, step: '0.1' },
         ].map(field => (
           <div key={field.id} className="flex flex-col gap-1">
@@ -113,9 +114,9 @@ export default function ProfileTwoColumn() {
             required
           >
             <option value="">Pilih Trimester</option>
-            <option value="1">Trimester 1</option>
-            <option value="2">Trimester 2</option>
-            <option value="3">Trimester 3</option>
+            <option value="1">Trimester 1 : Minggu 1 sampai 12</option>
+            <option value="2">Trimester 2 : Minggu 13 sampai 26</option>
+            <option value="3">Trimester 3 : Minggu 27 sampai Persalinan</option>
           </select>
         </div>
 
@@ -131,24 +132,10 @@ export default function ProfileTwoColumn() {
             required
           >
             <option value="">Pilih Aktivitas</option>
-            <option value="Rendah">Rendah</option>
-            <option value="Sedang">Sedang</option>
-            <option value="Tinggi">Tinggi</option>
+            <option value="Rendah">Rendah: banyak duduk</option>
+            <option value="Sedang">Sedang: kadang aktif berjalan</option>
+            <option value="Tinggi">Tinggi: rutin olahraga atau pekerjaan fisik</option>
           </select>
-        </div>
-
-        {/* Riwayat Medis */}
-        <div className="md:col-span-2 flex flex-col gap-1">
-          <label htmlFor="medical_history" className="font-medium text-[#AC1754]">Riwayat Medis</label>
-          <textarea
-            id="medical_history"
-            name="medical_history"
-            value={form.medical_history}
-            onChange={handleChange}
-            rows={4}
-            placeholder="Tuliskan jika ada riwayat medis penting..."
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition resize-none"
-          />
         </div>
 
         {/* Tombol Simpan */}

@@ -6,6 +6,9 @@ import { calculateNutrition } from '../presenters/calculatorPresenter';
 import { motion } from 'framer-motion';
 import { fadeVariant, slideUpVariant, fadeInDelayed } from '../animations/variants';
 import toast, { Toaster } from 'react-hot-toast';
+import { HiUser, HiScale, HiClock, HiOutlineFire, HiOutlineBeaker, HiOutlineHeart } from 'react-icons/hi';
+import ProfileInfo from '../components/ProfileInfo';
+import InfoCard from '../components/InfoCard';
 
 export default function Calculator() {
   const [profile, setProfile] = useState(null);
@@ -65,9 +68,11 @@ export default function Calculator() {
     try {
       const { data, error: calcError } = await calculateNutrition({
         age: profile.age,
+        prePregnancyWeight: profile.pre_pregnancy_weight,
         weight: profile.weight,
         height: profile.height,
         trimester: profile.trimester,
+        activity_level: profile.activity_level,
       });
 
       if (calcError) {
@@ -93,8 +98,8 @@ export default function Calculator() {
     return (
       <SidebarLayout>
         <div className="flex flex-col items-center justify-center h-screen px-4 space-y-4">
-          <div className="w-14 h-14 border-4 border-purple-300 border-t-purple-600 rounded-full animate-spin"></div>
-          <p className="text-lg text-gray-500">Memuat profil Anda...</p>
+          <div className="w-14 h-14 border-4 border-[#AC1754] rounded-full animate-spin"></div>
+          <p className="text-lg text-[#AC1754] font-semibold">Memuat Data Anda...</p>
         </div>
       </SidebarLayout>
     );
@@ -105,21 +110,21 @@ export default function Calculator() {
   return (
     <SidebarLayout>
       <Toaster position="top-center" reverseOrder={false} />
-      <motion.main {...fadeVariant} className={`px-4 pb-10 ${animatedClass}`}>
+      <motion.main {...fadeVariant} className={`px-4 pb-10 ${animatedClass} max-w-full`}>
         {!profileComplete ? (
           <motion.section
             {...slideUpVariant}
-            className={`max-w-xl mx-auto bg-[#FFDCDC] p-6 md:p-10 rounded-2xl shadow-lg text-center ${animatedClass}`}
+            className={`max-w-xl mx-auto bg-[#FFE5E8] p-6 sm:p-8 rounded-3xl shadow-lg text-center ${animatedClass}`}
           >
-            <h2 className="text-2xl font-semibold mb-6 text-purple-700">
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-6 text-[#AC1754]">
               Profil Anda belum lengkap
             </h2>
-            <p className="mb-8 text-gray-600">
-              Silakan lengkapi data pribadi Anda terlebih dahulu untuk menghitung kebutuhan kalori dan BMI.
+            <p className="mb-8 sm:mb-10 text-[#7B4B57] text-base sm:text-lg">
+              Silakan lengkapi data pribadi Anda terlebih dahulu untuk menghitung kebutuhan Gizi.
             </p>
             <button
               onClick={() => navigate('/profile')}
-              className="inline-block bg-purple-600 text-white px-8 py-3 rounded-full text-lg font-medium hover:bg-purple-700 transition"
+              className="inline-block bg-gradient-to-r from-[#AC1754] to-[#E53888] hover:from-[#E53888] hover:to-[#AC1754] text-white px-8 sm:px-12 py-3 sm:py-4 rounded-full text-base sm:text-xl font-semibold transition shadow-lg"
             >
               Isi Profil Sekarang
             </button>
@@ -127,27 +132,27 @@ export default function Calculator() {
         ) : (
           <motion.section
             {...fadeInDelayed}
-            className={`w-full max-w-5xl bg-[#FFDCDC] rounded-2xl shadow-lg p-4 sm:p-6 md:p-10 space-y-8 mx-auto ${animatedClass}`}
+            className={`w-full max-w-6xl bg-[#FFE5E8] rounded-3xl shadow-xl p-6 sm:p-8 space-y-10 mx-auto ${animatedClass}`}
           >
-            <h1 className="text-3xl font-extrabold text-center text-[#AC1754]">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-[#AC1754] tracking-wide">
               Kalkulator Kebutuhan Kalori & Pemantauan BMI
             </h1>
 
             <motion.div
               {...slideUpVariant}
-              className="rounded-xl p-4 md:p-6 shadow-inner grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-semibold text-base sm:text-lg bg-[#FFF2EB] text-black"
+              className="rounded-2xl p-4 sm:p-6 shadow-inner grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 bg-[#FFF2EB] text-[#7B4B57] font-semibold text-base sm:text-lg"
             >
-              <p><span className="font-bold">Usia:</span> {profile.age} tahun</p>
-              <p><span className="font-bold">Berat Badan:</span> {profile.weight} kg</p>
-              <p><span className="font-bold">Tinggi Badan:</span> {profile.height} cm</p>
-              <p><span className="font-bold">Trimester:</span> {profile.trimester}</p>
+              <ProfileInfo icon={<HiUser className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Usia" value={`${profile.age} tahun`} />
+              <ProfileInfo icon={<HiScale className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Berat Badan Sebelum Kehamilan" value={`${profile.pre_pregnancy_weight} kg`} />
+              <ProfileInfo icon={<HiScale className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Berat Badan Sekarang" value={`${profile.weight} kg`} />
+              <ProfileInfo icon={<HiClock className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Tinggi Badan" value={`${profile.height} cm`} />
+              <ProfileInfo icon={<HiOutlineFire className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Trimester" value={profile.trimester} />
+              <ProfileInfo icon={<HiOutlineHeart className="w-5 h-5 sm:w-6 sm:h-6 text-[#AC1754]" />} label="Aktivitas Harian" value={profile.activity_level} />
             </motion.div>
 
-            <motion.div {...fadeInDelayed} className="rounded-xl p-4 md:p-6 shadow-inner space-y-3 bg-[#FFF2EB]">
-              <h2 className="text-xl font-bold text-[#AC1754]">
-                Mengapa penting menghitung kebutuhan kalori, BMI, protein, dan lemak selama kehamilan?
-              </h2>
-              <p className="text-gray-700 leading-relaxed">
+            <motion.div {...fadeInDelayed} className="rounded-2xl p-4 sm:p-6 shadow-inner bg-[#FFF2EB] text-[#AC1754] space-y-4 text-sm sm:text-base leading-relaxed">
+              <h2 className="text-xl sm:text-2xl font-bold">Mengapa penting menghitung kebutuhan kalori, BMI, protein, dan lemak selama kehamilan?</h2>
+              <p className='black'>
                 Selama masa kehamilan, kebutuhan nutrisi Anda berubah untuk mendukung pertumbuhan dan perkembangan janin secara optimal. Dengan menghitung kebutuhan kalori, BMI, protein, dan lemak harian, Anda dapat memastikan asupan nutrisi yang tepat sehingga kesehatan ibu dan bayi terjaga, serta mengurangi risiko komplikasi.
               </p>
             </motion.div>
@@ -156,28 +161,28 @@ export default function Calculator() {
               {...fadeVariant}
               onClick={handleCalculate}
               disabled={loadingCalc}
-              className={`w-full py-4 rounded-xl font-semibold text-white text-lg sm:text-xl transition
-                ${loadingCalc ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E53888]'}
+              className={`w-full py-4 sm:py-5 rounded-2xl font-semibold text-white text-lg sm:text-xl transition shadow-lg
+                ${loadingCalc ? 'bg-[#E53888] cursor-not-allowed' : 'bg-gradient-to-r from-[#AC1754] to-[#E53888] hover:from-[#E53888] hover:to-[#AC1754]'}
               `}
             >
               {loadingCalc ? 'Menghitung...' : 'Hitung Kebutuhan Saya'}
             </motion.button>
 
             {error && (
-              <motion.p {...fadeInDelayed} className="text-red-600 text-center font-semibold">
+              <motion.p {...fadeInDelayed} className="text-red-600 text-center font-semibold text-base sm:text-lg">
                 {error}
               </motion.p>
             )}
 
             {result && (
-              <motion.div {...fadeInDelayed} className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6 shadow-inner space-y-6 text-purple-800">
-                <h2 className="text-2xl font-bold text-center">Hasil Perhitungan</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-center">
-                  <InfoCard label="BMI" value={result.bmi} />
-                  <InfoCard label="Status BMI" value={result.bmiStatus || result.status} />
-                  <InfoCard label="Kebutuhan Kalori" value={`${result.calorieNeed} kkal/hari`} />
-                  {result.proteinNeed && <InfoCard label="Kebutuhan Protein" value={`${result.proteinNeed} g/hari`} />}
-                  {result.fatNeed && <InfoCard label="Kebutuhan Lemak" value={`${result.fatNeed} g/hari`} />}
+              <motion.div {...fadeInDelayed} className="p-6 sm:p-8 space-y-6 text-[#AC1754] bg-[#FFF2EB] rounded-2xl shadow-lg max-w-4xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-center tracking-wide">Hasil Perhitungan</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-center">
+                  <InfoCard label="BMI" value={result.bmi} icon={<HiScale className="w-7 h-7 mx-auto mb-1" />} />
+                  <InfoCard label="Status BMI" value={result.bmiStatus || result.status} icon={<HiUser className="w-7 h-7 mx-auto mb-1" />} />
+                  <InfoCard label="Kebutuhan Kalori" value={`${result.calorieNeed} kkal/hari`} icon={<HiOutlineFire className="w-7 h-7 mx-auto mb-1" />} />
+                  {result.proteinNeed && <InfoCard label="Kebutuhan Protein" value={`${result.proteinNeed} g/hari`} icon={<HiOutlineBeaker className="w-7 h-7 mx-auto mb-1" />} />}
+                  {result.fatNeed && <InfoCard label="Kebutuhan Lemak" value={`${result.fatNeed} g/hari`} icon={<HiOutlineHeart className="w-7 h-7 mx-auto mb-1" />} />}
                 </div>
               </motion.div>
             )}
@@ -185,14 +190,5 @@ export default function Calculator() {
         )}
       </motion.main>
     </SidebarLayout>
-  );
-}
-
-function InfoCard({ label, value }) {
-  return (
-    <div className="bg-white rounded-xl p-6 shadow-md border border-purple-100">
-      <p className="text-sm text-purple-500">{label}</p>
-      <p className="text-xl sm:text-2xl font-semibold">{value}</p>
-    </div>
   );
 }

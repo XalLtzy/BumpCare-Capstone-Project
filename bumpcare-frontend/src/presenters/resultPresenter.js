@@ -1,10 +1,5 @@
-import api from '../models/api';
+import calculatorModel from '../models/calculatorModel';
 
 export async function fetchLatestResult() {
-  try {
-    const res = await api.get('/latest-result');
-    return { data: res.data.data, error: null };
-  } catch (err) {
-    return { data: null, error: err.response?.data?.message || 'Gagal memuat data' };
-  }
+  return await calculatorModel.fetchLatestResult();
 }

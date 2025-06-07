@@ -59,7 +59,7 @@ export default function Register() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-[#AC1754]"
               />
             </div>
             <div>
@@ -72,7 +72,7 @@ export default function Register() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-[#AC1754]"
               />
             </div>
             <div>
@@ -85,12 +85,12 @@ export default function Register() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-purple-400"
+                className="w-full border !border-gray-400 px-3 py-2 bg-[#FFF2EB] rounded-md outline-[#AC1754]"
               />
             </div>
             <button 
               type="submit" 
-              className="w-full bg-black text-white py-2 rounded-full hover:bg-gray-800"
+              className="w-full bg-[#AC1754] text-white py-2 rounded-md hover:bg-[#E53888] "
             >
               Daftar
             </button>

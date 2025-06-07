@@ -2,7 +2,7 @@ export const fadeVariant = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
-    transition: { duration: 0.5, ease: 'easeInOut' }
+    transition: { duration: 0.3, ease: 'easeInOut' }
   },
   exit: {
     opacity: 0,
@@ -15,7 +15,7 @@ export const slideUpVariant = {
   animate: {
     y: 0,
     opacity: 1,
-    transition: { duration: 0.5, ease: 'easeInOut' }
+    transition: { duration: 0.3, ease: 'easeInOut' }
   },
   exit: {
     y: 30,
@@ -28,7 +28,7 @@ export const scaleInVariant = {
   initial: { scale: 0.9 },  
   animate: {
     scale: 1,
-    transition: { duration: 0.5, ease: 'easeInOut' }
+    transition: { duration: 0.3, ease: 'easeInOut' }
   },
   exit: {
     scale: 0.9,
@@ -40,10 +40,10 @@ export const fadeInDelayed = {
   initial: { opacity: 0 },
   animate: {
     opacity: 1,
-    transition: { duration: 0.5, ease: 'easeInOut', delay: 0.15 }  
+    transition: { duration: 0.1, ease: 'easeInOut', delay: 0.15 }  
   },
   exit: {
     opacity: 0,
-    transition: { duration: 0.3, ease: 'easeInOut' }
+    transition: { duration: 0.1, ease: 'easeInOut' }
   }
 };
