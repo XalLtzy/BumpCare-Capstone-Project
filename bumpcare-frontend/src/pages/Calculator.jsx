@@ -5,7 +5,7 @@ import { getUserProfile } from '../presenters/userPresenter';
 import { calculateNutrition } from '../presenters/calculatorPresenter';
 import { motion } from 'framer-motion';
 import { fadeVariant, slideUpVariant, fadeInDelayed } from '../animations/variants';
-import toast, { Toaster } from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { HiUser, HiScale, HiClock, HiOutlineFire, HiOutlineBeaker, HiOutlineHeart } from 'react-icons/hi';
 import ProfileInfo from '../components/ProfileInfo';
 import InfoCard from '../components/InfoCard';
@@ -109,7 +109,6 @@ export default function Calculator() {
 
   return (
     <SidebarLayout>
-      <Toaster position="top-center" reverseOrder={false} />
       <motion.main {...fadeVariant} className={`px-4 pb-10 ${animatedClass} max-w-full`}>
         {!profileComplete ? (
           <motion.section
@@ -135,7 +134,7 @@ export default function Calculator() {
             className={`w-full max-w-6xl bg-[#FFE5E8] rounded-3xl shadow-xl p-6 sm:p-8 space-y-10 mx-auto ${animatedClass}`}
           >
             <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-[#AC1754] tracking-wide">
-              Kalkulator Kebutuhan Kalori & Pemantauan BMI
+              Hitung Kebutuhan Gizi Bunda Selama Kehamilan
             </h1>
 
             <motion.div

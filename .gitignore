@@ -1,11 +1,22 @@
-# umum
+# ========================
+# 🌐 Umum
+# ========================
 node_modules
 .env
 .DS_Store
 
-# frontend & backend logs
+# ========================
+# 🚫 Frontend & Backend Logs / Artifacts
+# ========================
 **/dist
 **/.next
 **/.turbo
 **/logs
 **/npm-debug.log*
+
+# ========================
+# 🐍 ML-service (Python + model)
+# ========================
+ml-service/venv311/
+ml-service/*.pkl
+ml-service/*.h5

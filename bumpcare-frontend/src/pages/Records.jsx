@@ -65,7 +65,7 @@ export default function Records() {
 
         {records.length === 0 ? (
           <p className="text-center text-gray-700 text-lg font-medium">
-            Belum ada data prediksi.
+            Belum ada data perhitungan gizi.
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

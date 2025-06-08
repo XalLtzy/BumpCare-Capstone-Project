@@ -10,6 +10,9 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Calculator from './pages/Calculator';
 import Records from './pages/Records';
+import FoodDetail from './pages/FoodDetail';
+import Testimoni from './pages/Testimoni';
+
 
 function PageTransition({ children }) {
   return (
@@ -46,6 +49,8 @@ function AnimatedRoutes() {
         <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
         <Route path="/calculate" element={<PageTransition><Calculator /></PageTransition>} />
         <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
+        <Route path="/food/:id" element={<PageTransition><FoodDetail /></PageTransition>} />
+        <Route path="/testimoni" element={<PageTransition><Testimoni /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );

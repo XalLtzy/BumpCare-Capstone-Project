@@ -239,7 +239,7 @@ export default function Home() {
         transition={{ duration: 0.8 }}
       >
         <div className="container mx-auto px-6">
-          <h3 className="text-4xl font-bold mb-12 text-center">Testimoni</h3>
+          <h3 className="text-4xl font-bold mb-12 text-center">Ulasan Pengguna</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[1, 2, 3].map((i) => (
               <div key={i} className="bg-[#FFF2EB] border rounded-xl p-6 shadow hover:shadow-md transition">
