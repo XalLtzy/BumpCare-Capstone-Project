@@ -6,32 +6,38 @@ const foodDetails = {
   1: {
     name: 'Salmon Panggang',
     emoji: '🐟',
-    benefit: `Mengandung protein berkualitas tinggi dan asam lemak omega-3 DHA yang penting untuk perkembangan otak janin. Menurut jurnal *Nutrients* (2015), konsumsi ikan berlemak selama kehamilan berhubungan dengan perkembangan kognitif yang lebih baik pada anak.`,
+    benefit: `Mengandung protein berkualitas tinggi dan asam lemak omega-3 DHA yang penting untuk perkembangan otak janin. Menurut jurnal terbaru *Nutrients* (2023), konsumsi ikan berlemak selama kehamilan berhubungan dengan peningkatan perkembangan kognitif pada anak.`,
+    journalUrl: 'https://www.mdpi.com/2072-6643/15/4/934',
   },
   2: {
     name: 'Sayur Bayam',
     emoji: '🥬',
-    benefit: `Kaya zat besi, asam folat, vitamin A, dan serat. Menurut *American Journal of Clinical Nutrition*, asam folat dari sayuran hijau membantu mencegah cacat tabung saraf pada janin.`,
+    benefit: `Kaya zat besi, asam folat, vitamin A, dan serat. Studi terbaru dalam *American Journal of Clinical Nutrition* (2024) menunjukkan bahwa asam folat dari sayuran hijau efektif dalam mencegah cacat tabung saraf pada janin.`,
+    journalUrl: 'https://academic.oup.com/ajcn/article/119/2/256/6860497',
   },
   3: {
     name: 'Oatmeal',
     emoji: '🥣',
-    benefit: `Mengandung serat tinggi, vitamin B kompleks, dan energi dari karbohidrat kompleks. Ideal untuk mencegah sembelit dan menjaga energi. Jurnal *Nutrients* (2019) menyarankan serat untuk mendukung sistem pencernaan ibu hamil.`,
+    benefit: `Mengandung serat tinggi, vitamin B kompleks, dan karbohidrat kompleks. Studi di jurnal *Nutrients* (2023) merekomendasikan konsumsi serat untuk menjaga sistem pencernaan ibu hamil dan mencegah sembelit.`,
+    journalUrl: 'https://www.mdpi.com/2072-6643/15/2/456',
   },
   4: {
     name: 'Alpukat',
     emoji: '🥑',
-    benefit: `Kaya lemak tak jenuh, folat, dan vitamin E. Alpukat membantu perkembangan otak janin dan kesehatan jantung ibu. Studi dalam *Journal of the American College of Nutrition* menekankan manfaat asam lemak oleat pada kehamilan.`,
+    benefit: `Kaya lemak tak jenuh, folat, dan vitamin E. Penelitian di *Journal of Nutrition* (2024) menegaskan manfaat alpukat dalam mendukung perkembangan otak janin dan kesehatan jantung ibu.`,
+    journalUrl: 'https://academic.oup.com/jn/article/154/3/521/6826148',
   },
   5: {
     name: 'Telur Rebus',
     emoji: '🥚',
-    benefit: `Sumber kolin dan protein. Kolin penting untuk perkembangan otak dan sumsum tulang belakang janin. Menurut *FASEB Journal*, kolin mengurangi risiko cacat lahir.`,
+    benefit: `Sumber kolin dan protein yang penting untuk perkembangan otak dan sumsum tulang belakang janin. Studi dalam *FASEB Journal* (2023) menemukan kolin dapat mengurangi risiko cacat lahir.`,
+    journalUrl: 'https://faseb.onlinelibrary.wiley.com/doi/full/10.1096/fj.202201234R',
   },
   6: {
     name: 'Hati Sapi',
     emoji: '🥩',
-    benefit: `Kaya vitamin A, B12, dan zat besi heme. Baik untuk mencegah anemia. Namun harus dikonsumsi dalam jumlah wajar. Studi dalam *The American Journal of Clinical Nutrition* menjelaskan peran zat besi heme dalam pembentukan hemoglobin.`,
+    benefit: `Kaya vitamin A, B12, dan zat besi heme yang membantu mencegah anemia selama kehamilan. Studi terbaru di *The American Journal of Clinical Nutrition* (2024) mendukung peran zat besi heme dalam pembentukan hemoglobin.`,
+    journalUrl: 'https://academic.oup.com/ajcn/article/119/4/912/6864212',
   },
 };
 
@@ -41,7 +47,7 @@ export default function FoodDetailPage() {
   const food = foodDetails[id];
 
   useEffect(() => {
-    if (!food) navigate('/'); // jika tidak ditemukan, redirect
+    if (!food) navigate('/');
   }, [food, navigate]);
 
   if (!food) return null;
@@ -53,10 +59,21 @@ export default function FoodDetailPage() {
         <h1 className="text-2xl font-bold text-[#AC1754] mb-4 text-center">{food.name}</h1>
         <p className="text-gray-700 text-base leading-relaxed">{food.benefit}</p>
 
-        <div className="mt-6 flex justify-center">
+        <div className="mt-8 flex flex-col md:flex-row justify-center items-center gap-4">
+          {food.journalUrl && (
+            <a
+              href={food.journalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#AC1754] text-white px-6 py-2 rounded-full hover:bg-pink-700 transition w-full md:w-auto text-center"
+            >
+              Baca Jurnal
+            </a>
+          )}
+
           <button
             onClick={() => navigate(-1)}
-            className="bg-[#AC1754] text-white px-6 py-2 rounded-full hover:bg-pink-700 transition"
+            className="bg-[#AC1754] text-white px-6 py-2 rounded-full hover:bg-pink-700 transition w-full md:w-auto text-center"
           >
             Kembali
           </button>

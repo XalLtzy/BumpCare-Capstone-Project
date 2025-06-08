@@ -1,4 +1,3 @@
-// src/pages/Testimoni.jsx
 import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
@@ -7,7 +6,6 @@ import { motion } from 'framer-motion';
 const fadeVariant = {
   whileHover: { scale: 1.02 },
   whileTap: { scale: 0.98 },
-  transition: { duration: 0.3, ease: 'easeInOut' },
 };
 
 export default function Testimoni() {
@@ -33,25 +31,52 @@ export default function Testimoni() {
 
   return (
     <SidebarLayout>
-      <div className="p-6 sm:p-10">
-        <div className="bg-[#FFDCDC] shadow-md rounded-2xl p-6 sm:p-10 max-w-2xl mx-auto">
-          <h1 className="text-2xl sm:text-3xl text-center font-bold text-[#AC1754] mb-6">
-            Kirim Ulasan Anda
-          </h1>
+        <h1 className="text-4xl font-extrabold text-center text-[#AC1754]">
+        Kirim Ulasan Anda
+        </h1>
+          <p className="text-gray-700 text-center text-sm sm:text-base mb-6">
+            Ulasan Anda sangat membantu kami untuk mengembangkan aplikasi ini menjadi lebih baik.
+          </p>
+        {/* Kontainer Luar */}
+        <motion.div
+          className="max-w-3xl mx-auto bg-[#FFDCDC] rounded-3xl shadow-xl p-8 space-y-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          
 
+        {/* Kontainer Form */}
+        <motion.div
+          className="bg-white rounded-2xl shadow-md p-6 flex flex-col space-y-4 border border-[#F2B8B5] mt-6 "
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           {submitted && (
-            <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-5 shadow-sm transition-all">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.3 }}
+              className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-6 shadow-sm"
+            >
               <CheckCircle className="w-5 h-5" />
               <p className="text-sm font-medium">Terima kasih atas ulasan Anda!</p>
-            </div>
+            </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <motion.form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Nama</label>
+              <label className="block text-sm font-semibold text-gray-700 text-justify mb-1">Nama</label>
               <input
                 type="text"
-                className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition"
+                className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition"
                 placeholder="Masukkan nama Anda"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -60,10 +85,10 @@ export default function Testimoni() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1">Pesan</label>
+              <label className="block text-sm font-semibold text-gray-700 text-justify mb-1">Pesan</label>
               <textarea
-                className="w-full rounded-xl border border-gray-400 px-4 py-2 h-32 bg-transparent resize-none focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition"
-                placeholder="Tulis pesan Ulasan Anda di sini..."
+                className="w-full rounded-xl border border-gray-400 px-4 py-2 h-32 bg-white resize-none focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition"
+                placeholder="Tulis pesan ulasan Anda di sini..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
@@ -74,17 +99,16 @@ export default function Testimoni() {
               {...fadeVariant}
               type="submit"
               disabled={loading}
-              className={`w-full py-4 sm:py-5 rounded-2xl font-semibold text-white text-lg sm:text-xl transition shadow-lg
+              className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-lg
                 ${loading
-                  ? 'bg-[#E53888] cursor-not-allowed'
-                  : 'bg-gradient-to-r from-[#AC1754] to-[#E53888] hover:from-[#E53888] hover:to-[#AC1754]'}
+                  ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B] flex items-center justify-center space-x-2'}
               `}
             >
               {loading ? 'Mengirim...' : 'Kirim Testimoni'}
             </motion.button>
-          </form>
-        </div>
-      </div>
+          </motion.form>
+        </motion.div>
+        </motion.div>
     </SidebarLayout>
   );
 }
