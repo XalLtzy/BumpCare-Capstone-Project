@@ -34,7 +34,7 @@ export default function SidebarLayout({ children }) {
       children: [
         { name: 'Kalkulator Kehamilan', path: '/calculate' },
         { name: 'Klasifikasi Gizi', path: '/klasifikasi-gizi' },
-        { name: 'Klasifikasi Risiko Kehamilan', path: '/klasifikasi-resiko' },
+        { name: 'Klasifikasi Risiko Kehamilan', path: '/klasifikasi-risiko' },
       ],
     },
     { name: 'Riwayat', path: '/records', icon: <ClipboardList size={20} /> },

@@ -12,6 +12,8 @@ import Calculator from './pages/Calculator';
 import Records from './pages/Records';
 import FoodDetail from './pages/FoodDetail';
 import Testimoni from './pages/Testimoni';
+import KlasifikasiGizi from './pages/KlasifikasiGizi';
+import KlasifikasiRisiko from './pages/KlasifikasiRisiko';
 
 
 function PageTransition({ children }) {
@@ -51,6 +53,8 @@ function AnimatedRoutes() {
         <Route path="/records" element={<PageTransition><Records /></PageTransition>} />
         <Route path="/food/:id" element={<PageTransition><FoodDetail /></PageTransition>} />
         <Route path="/testimoni" element={<PageTransition><Testimoni /></PageTransition>} />
+        <Route path="/klasifikasi-gizi" element={<PageTransition><KlasifikasiGizi /></PageTransition>} />
+        <Route path="/klasifikasi-risiko" element={<PageTransition><KlasifikasiRisiko /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
