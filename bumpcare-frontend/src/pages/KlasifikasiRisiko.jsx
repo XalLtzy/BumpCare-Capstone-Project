@@ -85,7 +85,7 @@ export default function KlasifikasiRisiko() {
               { label: 'Riwayat Komplikasi Kesehatan', name: 'komplikasi', type: 'select' },
               { label: 'Riwayat Diabetes Sebelum Hamil', name: 'diabetesSebelum', type: 'select' },
               { label: 'Diabetes Saat Hamil', name: 'diabetesSelama', type: 'select' },
-              { label: 'Status Kesehatan Mental', name: 'mental', type: 'select' },
+              { label: 'Riwayat Kesehatan Mental', name: 'mental', type: 'select' },
             ].map(({ label, name, type }) => (
               <div key={name}>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>

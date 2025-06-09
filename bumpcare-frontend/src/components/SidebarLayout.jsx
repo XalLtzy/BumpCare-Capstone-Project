@@ -32,7 +32,7 @@ export default function SidebarLayout({ children }) {
       name: 'Kalkulator',
       icon: <Calculator size={20} />,
       children: [
-        { name: 'Kalkulator Kehamilan', path: '/calculate' },
+        { name: 'Kebutuhan Gizi', path: '/calculate' },
         { name: 'Klasifikasi Gizi', path: '/klasifikasi-gizi' },
         { name: 'Klasifikasi Risiko Kehamilan', path: '/klasifikasi-risiko' },
       ],
