@@ -10,7 +10,7 @@ requiredEnv.forEach((envVar) => {
 
 const pool = new Pool({
   host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT) || 5432,
+  port: parseInt(process.env.DB_PORT, 10) || 5432,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
@@ -18,7 +18,10 @@ const pool = new Pool({
 });
 
 pool.connect()
-  .then(() => console.log('✅ Connected to PostgreSQL'))
+  .then((client) => {
+    console.log('✅ Connected to PostgreSQL');
+    client.release(); 
+  })
   .catch((err) => console.error('❌ Connection error:', err.stack));
 
 module.exports = {
