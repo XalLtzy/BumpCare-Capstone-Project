@@ -1,26 +1,23 @@
 from flask import Flask, request, jsonify
 import numpy as np
 import tensorflow as tf
-import pickle
-
+import joblib  
 app = Flask(__name__)
 
-model = tf.keras.models.load_model('model_status_gizi.h5')
-
-with open('scaler_gizi.pkl', 'rb') as f:
-    scaler = pickle.load(f)
-
-with open('label_encoder_gizi.pkl', 'rb') as f:
-    label_encoder = pickle.load(f)
+# Load model dan preprocessing tools
+scaler = joblib.load("scaler_gizi.pkl")
+label_encoder = joblib.load("label_encoder_gizi.pkl")
+model = tf.keras.models.load_model("model_status_gizi.h5")
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        data = request.json  # ekspektasi: { "features": [value1, value2, ...] }
+        print("Received JSON:", request.json)
+        data = request.json  # Ekspektasi input: { "features": [val1, val2, ...] }
         features = np.array(data['features']).reshape(1, -1)
 
-        # Preprocess input
+        # Preprocessing
         features_scaled = scaler.transform(features)
 
         # Prediksi
@@ -28,13 +25,13 @@ def predict():
         class_idx = np.argmax(preds, axis=1)
         label = label_encoder.inverse_transform(class_idx)[0]
 
-        # Probabilitas (optional)
-        prob = preds[0][class_idx[0]]
+        # Ambil probabilitas prediksi (opsional)
+        prob = float(preds[0][class_idx[0]])
 
         return jsonify({
             'status': 'success',
             'prediction': label,
-            'probability': float(prob)
+            'probability': prob
         })
 
     except Exception as e:

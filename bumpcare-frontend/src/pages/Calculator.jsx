@@ -179,7 +179,7 @@ export default function Calculator() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-center">
                   <InfoCard label="BMI" value={result.bmi} icon={<HiScale className="w-7 h-7 mx-auto mb-1" />} />
                   <InfoCard label="Status BMI" value={result.bmiStatus || result.status} icon={<HiUser className="w-7 h-7 mx-auto mb-1" />} />
-                  <InfoCard label="Kebutuhan Kalori" value={`${result.calorieNeed} kkal/hari`} icon={<HiOutlineFire className="w-7 h-7 mx-auto mb-1" />} />
+                  <InfoCard label="Kebutuhan Kalori" value={`${result.calorieNeed} kcal/hari`} icon={<HiOutlineFire className="w-7 h-7 mx-auto mb-1" />} />
                   {result.proteinNeed && <InfoCard label="Kebutuhan Protein" value={`${result.proteinNeed} g/hari`} icon={<HiOutlineBeaker className="w-7 h-7 mx-auto mb-1" />} />}
                   {result.fatNeed && <InfoCard label="Kebutuhan Lemak" value={`${result.fatNeed} g/hari`} icon={<HiOutlineHeart className="w-7 h-7 mx-auto mb-1" />} />}
                 </div>

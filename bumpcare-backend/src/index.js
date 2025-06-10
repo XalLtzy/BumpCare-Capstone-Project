@@ -4,20 +4,26 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const pregnancyRoutes = require('./routes/pregnancyRoutes');
 const userRoutes = require('./routes/userRoutes');
+const nutritionRoutes = require('./routes/nutritionRoutes'); 
 
 const init = async () => {
   const server = Hapi.server({
     port: process.env.PORT || 3000,
     host: 'localhost',
     routes: {
-      cors: { 
+      cors: {
         origin: ['*'],
-        credentials: true 
+        credentials: true
       },
     },
   });
 
-  server.route([...authRoutes, ...pregnancyRoutes, ...userRoutes]);
+  server.route([
+    ...authRoutes,
+    ...pregnancyRoutes,
+    ...userRoutes,
+    ...nutritionRoutes, 
+  ]);
 
   await server.start();
   console.log('Server running on %s', server.info.uri);

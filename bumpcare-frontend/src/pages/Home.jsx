@@ -278,8 +278,8 @@ export default function Home() {
         </div>
 
         {/* Ikon Sosial Media */}
-        <div className="container max-w-3xl w-full">
-          <div className="flex justify-center gap-12 text-4xl">
+        <div className="container max-w-4xl w-full">
+          <div className="flex flex-wrap justify-center gap-12 md:gap-12 text-4xl">
             <a
               href={socialLinks.whatsapp}
               target="_blank"

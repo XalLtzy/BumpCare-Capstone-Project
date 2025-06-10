@@ -127,7 +127,7 @@ export default function Dashboard() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-center text-sm md:text-base">
                 {[
                   { label: 'BMI', value: bmiData?.bmi || '-', subtitle: bmiData?.bmiStatus || 'Belum dihitung', icon: <HiOutlineScale className="w-6 h-6 mx-auto text-[#AC1754]" /> },
-                  { label: 'Kalori', value: bmiData?.calorieNeed ? `${bmiData.calorieNeed} kkal` : '-', icon: <HiOutlineFire className="w-6 h-6 mx-auto text-[#AC1754]" /> },
+                  { label: 'Kalori', value: bmiData?.calorieNeed ? `${bmiData.calorieNeed} kcal` : '-', icon: <HiOutlineFire className="w-6 h-6 mx-auto text-[#AC1754]" /> },
                   { label: 'Protein', value: bmiData?.proteinNeed ? `${bmiData.proteinNeed} g` : '-', icon: <HiOutlineBeaker className="w-6 h-6 mx-auto text-[#AC1754]" /> },
                   { label: 'Lemak', value: bmiData?.fatNeed ? `${bmiData.fatNeed} g` : '-', icon: <HiOutlineHeart className="w-6 h-6 mx-auto text-[#AC1754]" /> },
                 ].map((item, index) => (

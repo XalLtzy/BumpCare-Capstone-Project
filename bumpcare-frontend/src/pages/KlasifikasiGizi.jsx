@@ -1,7 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckCircle } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
 import { motion } from 'framer-motion';
+import {
+  fetchLatestNutritionInput,
+  submitNutritionClassification,
+} from '../presenters/nutritionPresenter';
 
 const fadeVariant = {
   whileHover: { scale: 1.02 },
@@ -22,11 +26,33 @@ export default function KlasifikasiGizi() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [statusGizi, setStatusGizi] = useState('');
 
   const bmi =
     formData.beratSekarang && formData.tinggi
       ? (formData.beratSekarang / ((formData.tinggi / 100) ** 2)).toFixed(2)
       : '';
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const data = await fetchLatestNutritionInput();
+        setFormData({
+          umur: data.age || '',
+          beratSebelum: data.prePregnancyWeight || '',
+          beratSekarang: data.weight || '',
+          tinggi: data.height || '',
+          lila: data.lila || '',
+          hb: data.hemoglobin || '',
+          sistolik: data.systolic || '',
+          diastolik: data.diastolic || '',
+        });
+      } catch (error) {
+        console.error('Gagal memuat data:', error);
+      }
+    };
+    loadInitialData();
+  }, []);
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -35,17 +61,39 @@ export default function KlasifikasiGizi() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
-      console.log('Data Gizi:', { ...formData, bmi });
+    try {
+      const payload = {
+        age: parseInt(formData.umur),
+        pre_pregnancy_weight: parseFloat(formData.beratSebelum),
+        weight: parseFloat(formData.beratSekarang),
+        height: parseFloat(formData.tinggi),
+        bmi: parseFloat(bmi),
+        lila: parseFloat(formData.lila),
+        hemoglobin: parseFloat(formData.hb),
+        systolic: parseFloat(formData.sistolik),
+        diastolic: parseFloat(formData.diastolik),
+      };
+
+      const result = await submitNutritionClassification({
+        lila: payload.lila,
+        hemoglobin: payload.hemoglobin,
+        systolic: payload.systolic,
+        diastolic: payload.diastolic,
+      });
+
+      setStatusGizi(result.nutritionStatus || 'Tidak Diketahui');
       setSubmitted(true);
-      setLoading(false);
 
       setTimeout(() => setSubmitted(false), 3000);
-    }, 1200);
+    } catch (err) {
+      console.error('Gagal submit:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -77,7 +125,9 @@ export default function KlasifikasiGizi() {
               transition={{ duration: 0.3 }}
             >
               <CheckCircle className="w-5 h-5" />
-              <p className="text-sm font-medium">Data berhasil disubmit!</p>
+              <p className="text-sm font-medium">
+                Status Gizi: <strong>{statusGizi}</strong>
+              </p>
             </motion.div>
           )}
 
@@ -89,21 +139,21 @@ export default function KlasifikasiGizi() {
             transition={{ delay: 0.4 }}
           >
             {[
-              { label: 'Umur Ibu (tahun)', name: 'umur', type: 'number' },
-              { label: 'Berat Badan Sebelum Hamil (kg)', name: 'beratSebelum', type: 'number' },
-              { label: 'Berat Badan Saat Ini (kg)', name: 'beratSekarang', type: 'number' },
-              { label: 'Tinggi Badan (cm)', name: 'tinggi', type: 'number' },
-              { label: 'Lingkar Lengan Atas (LILA) (cm)', name: 'lila', type: 'number' },
-              { label: 'Hemoglobin (Hb) (g/dL)', name: 'hb', type: 'number' },
-              { label: 'Tekanan Darah Sistolik (mmHg)', name: 'sistolik', type: 'number' },
-              { label: 'Tekanan Darah Diastolik (mmHg)', name: 'diastolik', type: 'number' },
-            ].map(({ label, name, type }) => (
+              { label: 'Umur Ibu (tahun)', name: 'umur' },
+              { label: 'Berat Badan Sebelum Hamil (kg)', name: 'beratSebelum' },
+              { label: 'Berat Badan Saat Ini (kg)', name: 'beratSekarang' },
+              { label: 'Tinggi Badan (cm)', name: 'tinggi' },
+              { label: 'Lingkar Lengan Atas (LILA) (cm)', name: 'lila' },
+              { label: 'Hemoglobin (Hb) (g/dL)', name: 'hb' },
+              { label: 'Tekanan Darah Sistolik (mmHg)', name: 'sistolik' },
+              { label: 'Tekanan Darah Diastolik (mmHg)', name: 'diastolik' },
+            ].map(({ label, name }) => (
               <div key={name}>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   {label}
                 </label>
                 <input
-                  type={type}
+                  type="number"
                   name={name}
                   value={formData[name]}
                   onChange={handleChange}

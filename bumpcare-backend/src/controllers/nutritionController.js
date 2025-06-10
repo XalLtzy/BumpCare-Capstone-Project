@@ -5,13 +5,17 @@ const { nutritionInputSchema } = require('../validations/nutritionValidation');
 const classifyNutritionHandler = async (request, h) => {
   const userId = request.auth.credentials.id;
   const { lila, hemoglobin, systolic, diastolic } = request.payload;
-
-  const { error } = nutritionInputSchema.validate({ lila, hemoglobin, systolic, diastolic });
+// Validasi input
+  const { error } = nutritionInputSchema.validate(request.payload);
   if (error) {
-    return h.response({ status: 'fail', message: error.message }).code(400);
+    return h.response({
+      status: 'fail',
+      message: error.details[0].message
+    }).code(400);
   }
 
   try {
+    // Ambil data kehamilan terbaru
     const result = await pool.query(
       `SELECT id, age, pre_pregnancy_weight, weight, height, bmi 
        FROM pregnancy_records 
@@ -39,10 +43,29 @@ const classifyNutritionHandler = async (request, h) => {
       diastolic,
     ];
 
-    const response = await axios.post('http://localhost:5000/predict', { features });
+    // Kirim ke model ML
+    let nutritionStatus;
+    try {
+      const response = await axios.post('http://localhost:5000/predict', { features });
 
-    const nutritionStatus = response.data.prediction;
+      if (!response.data || !response.data.prediction) {
+        return h.response({
+          status: 'error',
+          message: 'Model tidak mengembalikan hasil prediksi yang valid',
+        }).code(500);
+      }
 
+      nutritionStatus = response.data.prediction;
+    } catch (err) {
+      console.error('ML Server Error:', err.message);
+      return h.response({
+        status: 'error',
+        message: 'Gagal menghubungi model klasifikasi gizi',
+        detail: err.message,
+      }).code(500);
+    }
+
+    // Simpan hasil klasifikasi ke record kehamilan
     await pool.query(
       `UPDATE pregnancy_records
        SET lila = $1, hemoglobin = $2, systolic = $3, diastolic = $4, nutrition_status = $5
@@ -54,6 +77,7 @@ const classifyNutritionHandler = async (request, h) => {
       status: 'success',
       message: 'Klasifikasi gizi berhasil disimpan',
       data: {
+        recordId: id,
         age,
         prePregnancyWeight: pre_pregnancy_weight,
         weight,
@@ -68,8 +92,12 @@ const classifyNutritionHandler = async (request, h) => {
     }).code(200);
 
   } catch (err) {
-    console.error(err);
-    return h.response({ status: 'error', message: 'Gagal mengklasifikasi gizi', detail: err.message }).code(500);
+    console.error('Database Error:', err.message);
+    return h.response({
+      status: 'error',
+      message: 'Gagal memproses klasifikasi gizi',
+      detail: err.message,
+    }).code(500);
   }
 };
 

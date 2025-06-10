@@ -3,9 +3,10 @@ const pool = require('../models/db');
 
 const classifyBMI = (bmi) => {
   if (bmi < 18.5) return 'Kurus';
-  if (bmi < 25) return 'Normal';
-  if (bmi < 30) return 'Gemuk';
-  return 'Obesitas';
+  if (bmi < 23) return 'Normal';
+  if (bmi < 25) return 'Gemuk';
+  if (bmi < 30) return 'Obesitas 1';
+  return 'Obesitas 2';
 };
 
 const calculateNeeds = (prePregnancyWeight, currentWeight, trimester, activityLevel) => {
