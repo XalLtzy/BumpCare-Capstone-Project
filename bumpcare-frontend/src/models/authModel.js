@@ -12,7 +12,3 @@ export async function login({ email, password }) {
 export async function register({ name, email, password }) {
   return await api.post('/register', { name, email, password });
 }
-
-export async function deleteRecords() {
-  return await calculatorModel.deleteRecords();
-}

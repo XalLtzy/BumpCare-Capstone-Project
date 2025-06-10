@@ -1,8 +1,5 @@
 import api from './api';
 
-/**
- * Mendapatkan data input gizi terbaru.
- */
 export async function getLatestNutritionInput() {
   const res = await api.get('/latest-result');
   return res.data.data;
@@ -20,7 +17,6 @@ export async function getLatestNutritionInput() {
 export async function classifyNutrition({ lila, hemoglobin, systolic, diastolic }) {
   const token = localStorage.getItem('token');
 
-  // Susun fitur sesuai urutan model: pastikan sesuai dengan model ML kamu
   const features = [Number(lila), Number(hemoglobin), Number(systolic), Number(diastolic)];
 
   try {
@@ -37,6 +33,6 @@ export async function classifyNutrition({ lila, hemoglobin, systolic, diastolic 
 
   } catch (error) {
     console.error('❌ Gagal submit klasifikasi:', error);
-    throw error; // lempar lagi supaya bisa ditangani di komponen
+    throw error; 
   }
 }

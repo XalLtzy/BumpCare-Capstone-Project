@@ -4,7 +4,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const pregnancyRoutes = require('./routes/pregnancyRoutes');
 const userRoutes = require('./routes/userRoutes');
-const nutritionRoutes = require('./routes/nutritionRoutes'); 
+const nutritionRoutes = require('./routes/nutritionRoutes');
 
 const init = async () => {
   const server = Hapi.server({
@@ -18,11 +18,22 @@ const init = async () => {
     },
   });
 
+  server.route({
+    method: 'GET',
+    path: '/',
+    handler: () => {
+      return {
+        status: 'success',
+        message: 'Welcome to BumpCare Backend!',
+      };
+    },
+  });
+
   server.route([
     ...authRoutes,
     ...pregnancyRoutes,
     ...userRoutes,
-    ...nutritionRoutes, 
+    ...nutritionRoutes,
   ]);
 
   await server.start();
