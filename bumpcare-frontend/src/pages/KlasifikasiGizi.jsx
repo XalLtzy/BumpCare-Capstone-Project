@@ -36,21 +36,25 @@ export default function KlasifikasiGizi() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const data = await fetchLatestNutritionInput();
-        setFormData({
+        const { data, error } = await fetchLatestNutritionInput();
+
+        if (error || !data) {
+          console.warn('Tidak ada data input gizi terbaru.');
+          return;
+        }
+
+        setFormData((prev) => ({
+          ...prev,
           umur: data.age || '',
           beratSebelum: data.prePregnancyWeight || '',
           beratSekarang: data.weight || '',
           tinggi: data.height || '',
-          lila: data.lila || '',
-          hb: data.hemoglobin || '',
-          sistolik: data.systolic || '',
-          diastolik: data.diastolic || '',
-        });
-      } catch (error) {
-        console.error('Gagal memuat data:', error);
+        }));
+      } catch (err) {
+        console.warn('Gagal memuat data input awal:', err.message);
       }
     };
+
     loadInitialData();
   }, []);
 
@@ -67,30 +71,24 @@ export default function KlasifikasiGizi() {
 
     try {
       const payload = {
-        age: parseInt(formData.umur),
-        pre_pregnancy_weight: parseFloat(formData.beratSebelum),
-        weight: parseFloat(formData.beratSekarang),
-        height: parseFloat(formData.tinggi),
-        bmi: parseFloat(bmi),
         lila: parseFloat(formData.lila),
         hemoglobin: parseFloat(formData.hb),
         systolic: parseFloat(formData.sistolik),
         diastolic: parseFloat(formData.diastolik),
       };
 
-      const result = await submitNutritionClassification({
-        lila: payload.lila,
-        hemoglobin: payload.hemoglobin,
-        systolic: payload.systolic,
-        diastolic: payload.diastolic,
-      });
+      const result = await submitNutritionClassification(payload);
+
+      if (result.error) {
+        throw new Error(result.error);
+      }
 
       setStatusGizi(result.nutritionStatus || 'Tidak Diketahui');
       setSubmitted(true);
-
       setTimeout(() => setSubmitted(false), 3000);
     } catch (err) {
       console.error('Gagal submit:', err);
+      alert(err.message || 'Terjadi kesalahan saat mengirim data');
     } finally {
       setLoading(false);
     }

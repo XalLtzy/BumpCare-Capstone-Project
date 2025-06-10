@@ -5,7 +5,7 @@ const { nutritionInputSchema } = require('../validations/nutritionValidation');
 const classifyNutritionHandler = async (request, h) => {
   const userId = request.auth.credentials.id;
   const { lila, hemoglobin, systolic, diastolic } = request.payload;
-// Validasi input
+
   const { error } = nutritionInputSchema.validate(request.payload);
   if (error) {
     return h.response({
@@ -15,9 +15,8 @@ const classifyNutritionHandler = async (request, h) => {
   }
 
   try {
-    // Ambil data kehamilan terbaru
     const result = await pool.query(
-      `SELECT id, age, pre_pregnancy_weight, weight, height, bmi 
+      `SELECT id, pre_pregnancy_weight, weight, height 
        FROM pregnancy_records 
        WHERE user_id = $1 
        ORDER BY created_at DESC 
@@ -29,43 +28,38 @@ const classifyNutritionHandler = async (request, h) => {
       return h.response({ status: 'fail', message: 'Data kehamilan belum tersedia' }).code(404);
     }
 
-    const { id, age, pre_pregnancy_weight, weight, height, bmi } = result.rows[0];
+    const { id, pre_pregnancy_weight, weight, height } = result.rows[0];
 
-    const features = [
-      age,
-      pre_pregnancy_weight,
-      weight,
-      height,
-      bmi,
+    const bb_dulu = parseFloat(pre_pregnancy_weight);
+    const bb_sekarang = parseFloat(weight);
+    const tinggi_badan = parseFloat(height);
+    const tinggi_m = tinggi_badan / 100;
+    const bmi = bb_sekarang / (tinggi_m ** 2);
+
+    const inputPayload = {
+      bb_dulu,
+      bb_sekarang,
+      tinggi_badan,
       lila,
-      hemoglobin,
-      systolic,
-      diastolic,
-    ];
+      hb: hemoglobin,
+      sistolik: systolic,
+      diastolik: diastolic
+    };
 
-    // Kirim ke model ML
-    let nutritionStatus;
-    try {
-      const response = await axios.post('http://localhost:5000/predict', { features });
+    console.log('Payload yang dikirim ke Flask:', inputPayload);
 
-      if (!response.data || !response.data.prediction) {
-        return h.response({
-          status: 'error',
-          message: 'Model tidak mengembalikan hasil prediksi yang valid',
-        }).code(500);
-      }
+    const response = await axios.post('http://127.0.0.1:5000/predict', inputPayload);
 
-      nutritionStatus = response.data.prediction;
-    } catch (err) {
-      console.error('ML Server Error:', err.message);
+    console.log('Response dari Flask:', response.data); 
+
+    const nutritionStatus = response.data?.prediction;
+    if (!nutritionStatus) {
       return h.response({
         status: 'error',
-        message: 'Gagal menghubungi model klasifikasi gizi',
-        detail: err.message,
+        message: 'Model tidak mengembalikan hasil prediksi',
       }).code(500);
     }
 
-    // Simpan hasil klasifikasi ke record kehamilan
     await pool.query(
       `UPDATE pregnancy_records
        SET lila = $1, hemoglobin = $2, systolic = $3, diastolic = $4, nutrition_status = $5
@@ -78,10 +72,9 @@ const classifyNutritionHandler = async (request, h) => {
       message: 'Klasifikasi gizi berhasil disimpan',
       data: {
         recordId: id,
-        age,
-        prePregnancyWeight: pre_pregnancy_weight,
-        weight,
-        height,
+        bb_dulu,
+        bb_sekarang,
+        tinggi_badan,
         bmi,
         lila,
         hemoglobin,
@@ -92,7 +85,13 @@ const classifyNutritionHandler = async (request, h) => {
     }).code(200);
 
   } catch (err) {
-    console.error('Database Error:', err.message);
+    console.error('Error saat klasifikasi gizi:', err.message);
+
+    if (err.response) {
+      console.error('Status dari Flask:', err.response.status);
+      console.error('Data error dari Flask:', err.response.data);
+    }
+
     return h.response({
       status: 'error',
       message: 'Gagal memproses klasifikasi gizi',
@@ -101,4 +100,67 @@ const classifyNutritionHandler = async (request, h) => {
   }
 };
 
-module.exports = { classifyNutritionHandler };
+const getClassificationHistoryHandler = async (request, h) => {
+  const userId = request.auth.credentials.id;
+
+  try {
+    const result = await pool.query(
+      `SELECT id, pre_pregnancy_weight, weight, height, lila, hemoglobin, systolic, diastolic, nutrition_status, created_at 
+       FROM pregnancy_records 
+       WHERE user_id = $1 AND nutrition_status IS NOT NULL
+       ORDER BY created_at DESC`,
+      [userId]
+    );
+
+    return h.response({
+      status: 'success',
+      data: result.rows,
+    }).code(200);
+  } catch (err) {
+    return h.response({
+      status: 'error',
+      message: 'Gagal mengambil riwayat klasifikasi gizi',
+      detail: err.message,
+    }).code(500);
+  }
+};
+
+const getLatestClassificationHandler = async (request, h) => {
+  const userId = request.auth.credentials.id;
+
+  try {
+    const result = await pool.query(
+      `SELECT id, pre_pregnancy_weight, weight, height, lila, hemoglobin, systolic, diastolic, nutrition_status, created_at 
+       FROM pregnancy_records 
+       WHERE user_id = $1 AND nutrition_status IS NOT NULL
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [userId]
+    );
+
+    if (result.rowCount === 0) {
+      return h.response({
+        status: 'fail',
+        message: 'Tidak ada klasifikasi gizi terbaru',
+      }).code(404);
+    }
+
+    return h.response({
+      status: 'success',
+      data: result.rows[0],
+    }).code(200);
+  } catch (err) {
+    return h.response({
+      status: 'error',
+      message: 'Gagal mengambil data klasifikasi terbaru',
+      detail: err.message,
+    }).code(500);
+  }
+};
+
+module.exports = {
+  classifyNutritionHandler,
+  getClassificationHistoryHandler,
+  getLatestClassificationHandler,
+};
+

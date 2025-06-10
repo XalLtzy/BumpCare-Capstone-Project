@@ -1,15 +1,33 @@
-const { classifyNutritionHandler } = require('../controllers/nutritionController');
+const {
+  classifyNutritionHandler,
+  getClassificationHistoryHandler,
+  getLatestClassificationHandler,
+} = require('../controllers/nutritionController');
 const { verifyToken } = require('../middleware/authMiddleware');
 
-const nutritionRoutes = [
+module.exports = [
   {
     method: 'POST',
-    path: '/api/classify-nutrition',
+    path: '/api/nutrition/classify',
     handler: classifyNutritionHandler,
     options: {
       pre: [{ method: verifyToken }],
     },
   },
+  {
+    method: 'GET',
+    path: '/api/nutrition/history',
+    handler: getClassificationHistoryHandler,
+    options: {
+      pre: [{ method: verifyToken }],
+    },
+  },
+  {
+    method: 'GET',
+    path: '/api/nutrition/latest',
+    handler: getLatestClassificationHandler,
+    options: {
+      pre: [{ method: verifyToken }],
+    },
+  },
 ];
-
-module.exports = nutritionRoutes;
