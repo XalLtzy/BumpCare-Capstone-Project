@@ -146,7 +146,7 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.5, ease: 'easeInOut' }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-[#AC1754]">Welcome to Bumpcare</h2>
+            <h2 className="text-5xl md:text-6xl font-bold mb-6 text-[#000000]">Welcome to Bumpcare</h2>
             <p className="text-xl text-gray-600 mb-6">
               A Smart Pregnancy Companion for Maternal Well-being
             </p>

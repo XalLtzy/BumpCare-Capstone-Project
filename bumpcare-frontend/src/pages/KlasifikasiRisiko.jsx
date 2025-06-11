@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CheckCircle } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
 import { motion } from 'framer-motion';
+import { submitRiskClassification } from '../presenters/riskPresenter';
 
 const fadeVariant = {
   whileHover: { scale: 1.02 },
@@ -10,44 +11,51 @@ const fadeVariant = {
 
 export default function KlasifikasiRisiko() {
   const [formData, setFormData] = useState({
-    umur: '',
-    hb: '',
-    sistolik: '',
-    diastolik: '',
-    gulaDarah: '',
-    suhu: '',
-    detak: '',
-    berat: '',
-    tinggi: '',
-    komplikasi: '',
-    diabetesSebelum: '',
-    diabetesSelama: '',
-    mental: '',
+    blood_sugar: '',
+    body_temperature: '',
+    heart_rate: '',
+    previous_complications: '',
+    preexisting_diabetes: '',
+    gestational_diabetes: '',
+    mental_health: '',
   });
 
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const bmi = formData.berat && formData.tinggi
-    ? (formData.berat / ((formData.tinggi / 100) ** 2)).toFixed(2)
-    : '';
-  const suhuF = formData.suhu ? (parseFloat(formData.suhu) * 9 / 5 + 32).toFixed(1) : '';
+  const [result, setResult] = useState(null); // ⬅️ untuk menyimpan hasil klasifikasi
 
   const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
-    setTimeout(() => {
-      console.log('Data Risiko:', { ...formData, bmi, suhuF });
-      setSubmitted(true);
-      setLoading(false);
+    try {
+      const parsed = {
+        blood_sugar: parseFloat(formData.blood_sugar),
+        body_temperature: parseFloat(formData.body_temperature),
+        heart_rate: parseInt(formData.heart_rate, 10),
+        previous_complications: parseInt(formData.previous_complications, 10),
+        preexisting_diabetes: parseInt(formData.preexisting_diabetes, 10),
+        gestational_diabetes: parseInt(formData.gestational_diabetes, 10),
+        mental_health: parseInt(formData.mental_health, 10),
+      };
 
-      setTimeout(() => setSubmitted(false), 3000);
-    }, 1200);
+      for (const key in parsed) {
+        if (isNaN(parsed[key])) throw new Error(`Field ${key} tidak valid.`);
+      }
+
+      const response = await submitRiskClassification(parsed);
+      setResult(response); // ⬅️ simpan hasil dari Flask
+
+    } catch (err) {
+      alert(err.message || 'Gagal mengirim data');
+      setResult(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,34 +71,35 @@ export default function KlasifikasiRisiko() {
         <motion.div className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-[#F2B8B5]"
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
 
-          {submitted && (
-            <motion.div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-6 shadow-sm"
+          {result && (
+            <motion.div className="flex flex-col gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm"
               initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-              <CheckCircle className="w-5 h-5" />
-              <p className="text-sm font-medium">Data berhasil disubmit!</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <p className="text-sm font-medium">Prediksi Risiko: <strong>{result.risk_classification === 'High' ? 'High Risk' : 'Low Risk'}</strong></p>
+              </div>
+              <p className="text-xs text-gray-700">Tingkat keyakinan: {(result.confidence * 100).toFixed(2)}%</p>
             </motion.div>
           )}
 
           <motion.form onSubmit={handleSubmit} className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
             {[
-              { label: 'Umur Ibu (tahun)', name: 'umur' },
-              { label: 'Hemoglobin (Hb) (g/dL)', name: 'hb' },
-              { label: 'Tekanan Darah Sistolik (mmHg)', name: 'sistolik' },
-              { label: 'Tekanan Darah Diastolik (mmHg)', name: 'diastolik' },
-              { label: 'Kadar Gula Darah (mmol/L)', name: 'gulaDarah' },
-              { label: 'Suhu Tubuh (°C)', name: 'suhu' },
-              { label: 'Detak Jantung (bpm)', name: 'detak' },
-              { label: 'Berat Badan (kg)', name: 'berat' },
-              { label: 'Tinggi Badan (cm)', name: 'tinggi' },
-              { label: 'Riwayat Komplikasi Kesehatan', name: 'komplikasi', type: 'select' },
-              { label: 'Riwayat Diabetes Sebelum Hamil', name: 'diabetesSebelum', type: 'select' },
-              { label: 'Diabetes Saat Hamil', name: 'diabetesSelama', type: 'select' },
-              { label: 'Riwayat Kesehatan Mental', name: 'mental', type: 'select' },
+              { label: 'Kadar Gula Darah (mmol/L)', name: 'blood_sugar' },
+              { label: 'Suhu Tubuh (°C)', name: 'body_temperature' },
+              { label: 'Detak Jantung (bpm)', name: 'heart_rate' },
+              { label: 'Riwayat Komplikasi Kesehatan', name: 'previous_complications', type: 'select' },
+              { label: 'Riwayat Diabetes Sebelum Hamil', name: 'preexisting_diabetes', type: 'select' },
+              { label: 'Diabetes Saat Hamil', name: 'gestational_diabetes', type: 'select' },
+              { label: 'Riwayat Kesehatan Mental', name: 'mental_health', type: 'select' },
             ].map(({ label, name, type }) => (
               <div key={name}>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
                 {type === 'select' ? (
-                  <select name={name} value={formData[name]} onChange={handleChange}
+                  <select
+                    name={name}
+                    value={formData[name]}
+                    onChange={handleChange}
+                    required
                     className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]">
                     <option value="">Pilih</option>
                     <option value="0">Tidak</option>
@@ -102,30 +111,19 @@ export default function KlasifikasiRisiko() {
                     name={name}
                     value={formData[name]}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]"
                     required
+                    className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]"
                   />
                 )}
               </div>
             ))}
-
-            {bmi && (
-              <div className="text-sm font-medium text-gray-700">
-                BMI: <span className="font-bold">{bmi}</span>
-              </div>
-            )}
-            {suhuF && (
-              <div className="text-sm font-medium text-gray-700">
-                Suhu Tubuh dalam °F: <span className="font-bold">{suhuF}</span>
-              </div>
-            )}
 
             <motion.button
               {...fadeVariant}
               type="submit"
               disabled={loading}
               className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-lg
-                ${loading ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B]'}`}
+              ${loading ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B]'}`}
             >
               {loading ? 'Memproses...' : 'Cek Risiko'}
             </motion.button>
