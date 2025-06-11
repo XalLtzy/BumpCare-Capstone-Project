@@ -35,7 +35,7 @@ const nutritionModel = {
         error: err.response?.data?.message || 'Gagal memuat hasil klasifikasi terbaru',
       };
     }
-  }
+  },
 };
 
 export default nutritionModel;

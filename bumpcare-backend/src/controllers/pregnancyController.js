@@ -83,7 +83,7 @@ const getRecordsHandler = async (request, h) => {
   try {
     const result = await pool.query(
       `SELECT id, age, pre_pregnancy_weight, weight, height, trimester, bmi, bmi_status, 
-              calorie_needs, protein_needs, fat_needs, activity_level, created_at 
+              calorie_needs, protein_needs, fat_needs, activity_level, created_at, lila, hemoglobin, systolic, diastolic, nutrition_status 
        FROM pregnancy_records 
        WHERE user_id = $1 
        ORDER BY created_at DESC`,

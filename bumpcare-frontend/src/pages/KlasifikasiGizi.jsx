@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { CheckCircle } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
 import { motion } from 'framer-motion';
-import {
-  fetchLatestNutritionInput,
-  submitNutritionClassification,
-} from '../presenters/nutritionPresenter';
+import { submitNutritionClassification } from '../presenters/nutritionPresenter';
+import { getUserProfile } from '../presenters/userPresenter';
+import getDeskripsiByLabel from '../utils/labelDeskripsi';
+import DeskripsiGiziCard from '../components/DeskripsiGiziCard';
 
 const fadeVariant = {
   whileHover: { scale: 1.02 },
@@ -27,6 +27,7 @@ export default function KlasifikasiGizi() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusGizi, setStatusGizi] = useState('');
+  const [deskripsiGizi, setDeskripsiGizi] = useState('');
 
   const bmi =
     formData.beratSekarang && formData.tinggi
@@ -36,25 +37,20 @@ export default function KlasifikasiGizi() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const { data, error } = await fetchLatestNutritionInput();
-
-        if (error || !data) {
-          console.warn('Tidak ada data input gizi terbaru.');
-          return;
-        }
+        const user = await getUserProfile();
+        if (!user) return;
 
         setFormData((prev) => ({
           ...prev,
-          umur: data.age || '',
-          beratSebelum: data.prePregnancyWeight || '',
-          beratSekarang: data.weight || '',
-          tinggi: data.height || '',
+          umur: user.age || '',
+          beratSebelum: user.pre_pregnancy_weight || '',
+          beratSekarang: user.weight || '',
+          tinggi: user.height || '',
         }));
       } catch (err) {
-        console.warn('Gagal memuat data input awal:', err.message);
+        console.warn('Gagal memuat data:', err.message);
       }
     };
-
     loadInitialData();
   }, []);
 
@@ -68,7 +64,6 @@ export default function KlasifikasiGizi() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const payload = {
         lila: parseFloat(formData.lila),
@@ -78,17 +73,14 @@ export default function KlasifikasiGizi() {
       };
 
       const result = await submitNutritionClassification(payload);
+      if (result.error) throw new Error(result.error);
 
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
-      setStatusGizi(result.nutritionStatus || 'Tidak Diketahui');
+      const status = result.nutritionStatus || 'Tidak Diketahui';
+      setStatusGizi(status);
+      setDeskripsiGizi(getDeskripsiByLabel(status));
       setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 3000);
     } catch (err) {
-      console.error('Gagal submit:', err);
-      alert(err.message || 'Terjadi kesalahan saat mengirim data');
+      alert(err.message || 'Terjadi kesalahan');
     } finally {
       setLoading(false);
     }
@@ -96,56 +88,32 @@ export default function KlasifikasiGizi() {
 
   return (
     <SidebarLayout>
-      <h1 className="text-4xl font-extrabold text-center text-[#AC1754]">
-        Klasifikasi Gizi
-      </h1>
-      <p className="text-gray-700 text-center text-sm sm:text-base mb-6">
-        Silakan masukkan data untuk mengevaluasi status gizi ibu hamil.
-      </p>
+      <div className="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold text-center text-[#AC1754] mb-3">
+          Klasifikasi Gizi Ibu Hamil
+        </h1>
+        <p className="text-center text-gray-600 text-sm sm:text-base mb-8">
+          Isi data berikut untuk mengevaluasi status gizi ibu hamil.
+        </p>
 
-      <motion.div
-        className="max-w-3xl mx-auto bg-[#FFDCDC] rounded-3xl shadow-xl p-8 space-y-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <motion.div
-          className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-[#F2B8B5]"
-          initial={{ opacity: 0, y: 30 }}
+        <motion.form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-3xl shadow-xl p-6 sm:p-10 space-y-6"
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          {submitted && (
-            <motion.div
-              className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl mb-6 shadow-sm"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              <CheckCircle className="w-5 h-5" />
-              <p className="text-sm font-medium">
-                Status Gizi: <strong>{statusGizi}</strong>
-              </p>
-            </motion.div>
-          )}
-
-          <motion.form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
-              { label: 'Umur Ibu (tahun)', name: 'umur' },
-              { label: 'Berat Badan Sebelum Hamil (kg)', name: 'beratSebelum' },
-              { label: 'Berat Badan Saat Ini (kg)', name: 'beratSekarang' },
-              { label: 'Tinggi Badan (cm)', name: 'tinggi' },
+              { label: 'Umur Ibu (tahun)', name: 'umur', readOnly: true },
+              { label: 'Berat Badan Sebelum Hamil (kg)', name: 'beratSebelum', readOnly: true },
+              { label: 'Berat Badan Saat Ini (kg)', name: 'beratSekarang', readOnly: true },
+              { label: 'Tinggi Badan (cm)', name: 'tinggi', readOnly: true },
               { label: 'Lingkar Lengan Atas (LILA) (cm)', name: 'lila' },
               { label: 'Hemoglobin (Hb) (g/dL)', name: 'hb' },
               { label: 'Tekanan Darah Sistolik (mmHg)', name: 'sistolik' },
               { label: 'Tekanan Darah Diastolik (mmHg)', name: 'diastolik' },
-            ].map(({ label, name }) => (
+            ].map(({ label, name, readOnly }) => (
               <div key={name}>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   {label}
@@ -155,32 +123,58 @@ export default function KlasifikasiGizi() {
                   name={name}
                   value={formData[name]}
                   onChange={handleChange}
-                  className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-[#AC1754] transition"
+                  readOnly={readOnly}
+                  disabled={readOnly}
+                        className={`w-full rounded-xl border px-4 py-2 shadow-sm transition ${
+                  readOnly
+                    ? 'bg-gray-100 cursor-not-allowed text-gray-500'
+                    : 'bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#AC1754]'
+                  }`}
                   required
                 />
               </div>
             ))}
+          </div>
 
-            {bmi && (
-              <div className="text-sm font-medium text-gray-700">
-                BMI (Body Mass Index): <span className="font-bold">{bmi}</span>
-              </div>
-            )}
+          {bmi && (
+            <p className="text-sm font-medium text-gray-700">
+              BMI (Body Mass Index): <span className="font-bold">{bmi}</span>
+            </p>
+          )}
 
-            <motion.button
-              {...fadeVariant}
-              type="submit"
-              disabled={loading}
-              className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-lg
-                ${loading
-                  ? 'bg-[#E53888] cursor-not-allowed'
-                  : 'bg-[#AC1754] hover:bg-[#E5408B]'}`}
-            >
-              {loading ? 'Memproses...' : 'Klasifikasikan'}
-            </motion.button>
-          </motion.form>
-        </motion.div>
-      </motion.div>
+          <motion.button
+            {...fadeVariant}
+            type="submit"
+            disabled={loading}
+            className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-md ${
+              loading ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B]'
+            }`}
+          >
+            {loading ? 'Memproses...' : 'Klasifikasikan'}
+          </motion.button>
+        </motion.form>
+
+        {submitted && (
+          <motion.div
+            className="mt-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm mb-4">
+              <CheckCircle className="w-5 h-5" />
+              <p className="text-sm font-medium">
+                Status Gizi: <strong>{statusGizi}</strong>
+              </p>
+            </div>
+
+            <DeskripsiGiziCard
+              status={statusGizi}
+              markdown={deskripsiGizi}
+            />
+          </motion.div>
+        )}
+      </div>
     </SidebarLayout>
   );
 }

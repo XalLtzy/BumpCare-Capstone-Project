@@ -5,12 +5,11 @@ import { motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import { HiOutlineTrash, HiOutlineCalendar, HiOutlineUser, HiOutlineScale } from 'react-icons/hi';
 
-
 const fadeVariant = {
   whileHover: { scale: 1.02 },
   whileTap: { scale: 0.98 },
 };
-
+  
 export default function Records() {
   const [records, setRecords] = useState([]);
   const [error, setError] = useState('');
@@ -37,7 +36,7 @@ export default function Records() {
       const result = await deleteRecordById(id);
       if (result.success) {
         setRecords((prev) => prev.filter((item) => item.id !== id));
-        toast.success('Data berhasil dihapus'); 
+        toast.success('Data berhasil dihapus');
       } else {
         setError('Gagal menghapus data');
       }
@@ -77,6 +76,7 @@ export default function Records() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 * index }}
               >
+                {/* Tanggal */}
                 <div className="flex items-center space-x-3 text-[#AC1754] font-semibold text-sm">
                   <HiOutlineCalendar size={18} />
                   <span>
@@ -92,35 +92,51 @@ export default function Records() {
                   </span>
                 </div>
 
+                {/* Data Dasar */}
                 <div className="text-gray-700 space-y-1 text-base font-semibold">
                   <p>
-                    <HiOutlineUser className="inline mr-1 mb-1" /> Usia: {rec.age} • Trimester: {rec.trimester}
+                    <HiOutlineUser className="inline mr-1 mb-1" />
+                    Usia: {rec.age} • Trimester: {rec.trimester}
                   </p>
-                  <p>Berat Badan Sebelum Hamil: <span className="font-normal">{rec.pre_pregnancy_weight} kg</span></p>
+                  <p>Berat Sebelum Hamil: <span className="font-normal">{rec.pre_pregnancy_weight} kg</span></p>
                 </div>
 
                 <div className="text-gray-600 space-y-1 text-sm">
-                  <p>
-                    Berat Badan Sekarang: <span className="font-semibold">{rec.weight} kg</span> • Tinggi: <span className="font-semibold">{rec.height} cm</span>
-                  </p>
+                  <p>Berat Sekarang: <span className="font-semibold">{rec.weight} kg</span></p>
+                  <p>Tinggi: <span className="font-semibold">{rec.height} cm</span></p>
                 </div>
 
+                {/* Hasil Perhitungan */}
                 <div className="text-[#AC1754] font-semibold text-sm space-y-1 border-t border-[#AC1754] pt-3">
-                  <p>
-                    <HiOutlineScale className="inline mr-1 mb-1" />
-                    BMI: {rec.bmi}
-                  </p>
+                  <p><HiOutlineScale className="inline mr-1 mb-1" /> BMI: {rec.bmi}</p>
                   <p>Kalori: {rec.calorie_needs} kkal/hari</p>
                   <p>Protein: {rec.protein_needs} g/hari</p>
                   <p>Lemak: {rec.fat_needs} g/hari</p>
                 </div>
 
+                {/* Data Klasifikasi Gizi */}
+                {(rec.lila || rec.hemoglobin || rec.systolic || rec.diastolic || rec.nutrition_status) && (
+                  <div className="text-sm text-gray-700 space-y-1 border-t border-dashed border-[#AC1754] pt-3">
+                    {rec.lila && <p>Lingkar Lengan Atas (LILA) : <span className="font-semibold"> {rec.lila} cm</span></p>}
+                    {rec.hemoglobin && <p>Hemoglobin : <span className="font-semibold">{rec.hemoglobin} g/dL</span></p>}
+                    {(rec.systolic && rec.diastolic) && (
+                      <p>Tekanan Darah Sistolik/Diastolik : <span className="font-semibold"> {rec.systolic}/{rec.diastolic} mmHg</span></p>
+                    )}
+                    {rec.nutrition_status && (
+                      <p><strong>Status Gizi:</strong> <span className="text-[#AC1754] font-semibold">{rec.nutrition_status}</span></p>
+                    )}
+                  </div>
+                )}
+
+                {/* Tombol Hapus */}
                 <motion.button
                   {...fadeVariant}
                   onClick={() => setDeleteTargetId(rec.id)}
                   disabled={loadingId === rec.id}
                   className={`mt-auto py-3 rounded-xl font-semibold text-white text-base transition
-                    ${loadingId === rec.id ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B] flex items-center justify-center space-x-2'}
+                    ${loadingId === rec.id
+                      ? 'bg-[#E53888] cursor-not-allowed'
+                      : 'bg-[#AC1754] hover:bg-[#E5408B] flex items-center justify-center space-x-2'}
                   `}
                 >
                   <HiOutlineTrash size={20} />
