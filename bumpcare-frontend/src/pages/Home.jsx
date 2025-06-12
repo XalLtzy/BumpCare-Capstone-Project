@@ -4,6 +4,11 @@ import { motion } from 'framer-motion';
 import { Link as ScrollLink } from 'react-scroll';
 import { Menu, X } from 'lucide-react';
 import { FaWhatsapp, FaInstagram, FaFacebookF, FaYoutube, FaEnvelope } from "react-icons/fa";
+import { fetchAllTestimoni } from '../presenters/testimoniPresenter';
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
 
 import heroImage from '../assets/images/Bumil.png';
 import logo from '../assets/images/Logo.png';
@@ -28,6 +33,23 @@ export default function Home() {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  const [testimoni, setTestimoni] = useState([]);
+
+  useEffect(() => {
+    const loadTestimoni = async () => {
+      try {
+        const data = await fetchAllTestimoni();
+        console.log("Testimoni dari API:", data);
+        if (Array.isArray(data)) {
+          setTestimoni(data);
+        }
+      } catch (err) {
+        console.error('Gagal memuat testimoni:', err.message);
+      }
+    };
+    loadTestimoni();
+  }, []);
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -41,6 +63,28 @@ export default function Home() {
     youtube: 'https://youtube.com/bumpcare',
     facebook: 'https://facebook.com/bumpcare',
     email: 'naufalpratistas@gmail.com'
+  };
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: Math.min(3, testimoni.length),
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: Math.min(2, testimoni.length),
+        },
+      },
+      {
+        breakpoint: 640,
+        settings: {
+          slidesToShow: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -242,26 +286,29 @@ export default function Home() {
       >
         <div className="container mx-auto px-6">
           <h3 className="text-4xl font-bold mb-12 text-[#AC1754] text-center">Ulasan Pengguna</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-[#FFF2EB] border rounded-xl p-6 shadow hover:shadow-md transition">
-                <p className="italic text-lg mb-4">
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla convallis egestas rhoncus."
-                </p>
-                <div className="flex items-center space-x-4">
-                  <img
-                    src={`https://randomuser.me/api/portraits/women/${i * 10}.jpg`}
-                    alt="User Testimoni"
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                  <span className="font-semibold">Pengguna {i}</span>
+          {testimoni.length === 0 ? (
+            <p className="text-center text-gray-600">Belum ada testimoni.</p>
+          ) : (
+          <Slider {...settings}>
+            {testimoni.map((item, i) => (
+              <div key={i} className="px-4">
+                <div className="bg-[#FFF2EB] border rounded-xl p-6 shadow hover:shadow-md transition h-full">
+                  <p className="italic text-lg mb-4">"{item.message}"</p>
+                  <div className="flex mb-2">
+                    {[...Array(5)].map((_, starIndex) => (
+                      <span key={starIndex} className={starIndex < item.rating ? "text-yellow-500" : "text-gray-300"}>
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                  <div className="font-semibold">{item.name}</div>
                 </div>
               </div>
             ))}
-          </div>
+          </Slider>
+          )}
         </div>
       </motion.section>
-
 
       {/* Kontak Section */}
       <motion.section

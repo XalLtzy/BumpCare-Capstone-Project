@@ -1,4 +1,3 @@
-// src/models/riskModel.js
 import api from './api';
 
 const riskModel = {

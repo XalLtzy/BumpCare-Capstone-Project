@@ -6,6 +6,7 @@ const pregnancyRoutes = require('./routes/pregnancyRoutes');
 const userRoutes = require('./routes/userRoutes');
 const nutritionRoutes = require('./routes/nutritionRoutes');
 const riskRoutes = require('./routes/riskRoutes');
+const testimoniRoutes = require('./routes/testimoniRoutes');
 
 const init = async () => {
   const server = Hapi.server({
@@ -36,6 +37,7 @@ const init = async () => {
     ...userRoutes,
     ...nutritionRoutes,
     ...riskRoutes,
+    ...testimoniRoutes,
   ]);
 
   await server.start();
