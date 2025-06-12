@@ -53,7 +53,7 @@ export default function Records() {
       </h1>
 
       <motion.div
-        className="max-w-5xl mx-auto bg-[#FFDCDC] rounded-3xl shadow-xl p-8 space-y-8"
+        className="max-w-7xl mx-auto bg-[#FFDCDC] rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 space-y-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -71,7 +71,7 @@ export default function Records() {
             {records.map((rec, index) => (
               <motion.div
                 key={rec.id}
-                className="bg-white rounded-2xl shadow-md p-6 flex flex-col space-y-4 border border-[#F2B8B5]"
+                className="bg-white rounded-2xl shadow-md p-4 sm:p-6 flex flex-col space-y-4 border border-[#F2B8B5]"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 * index }}
@@ -127,6 +127,79 @@ export default function Records() {
                     )}
                   </div>
                 )}
+
+                {/* Data Risiko Kehamilan */}
+                {(
+                  rec.blood_sugar ||
+                  rec.heart_rate ||
+                  rec.body_temperature_f ||
+                  rec.previous_complications !== null ||
+                  rec.preexisting_diabetes !== null ||
+                  rec.gestational_diabetes !== null ||
+                  rec.mental_health !== null ||
+                  rec.risk_classification
+                ) && (
+                  <div className="text-sm text-gray-700 space-y-1 border-t border-dashed border-[#AC1754] pt-3">
+                    {rec.blood_sugar && (
+                      <p>Gula Darah: <span className="font-semibold">{rec.blood_sugar} mg/dL</span></p>
+                    )}
+                    {rec.heart_rate && (
+                      <p>Denyut Jantung: <span className="font-semibold">{rec.heart_rate} bpm</span></p>
+                    )}
+                    {rec.body_temperature_f && (
+                      <p>Suhu Tubuh: <span className="font-semibold">
+                        {((parseFloat(rec.body_temperature_f) - 32) * 5 / 9).toFixed(1)} °C
+                      </span></p>
+                    )}
+                    {rec.previous_complications !== null && (
+                      <p>Komplikasi Sebelumnya: <span className="font-semibold">{rec.previous_complications ? 'Ya' : 'Tidak'}</span></p>
+                    )}
+                      {rec.preexisting_diabetes !== null && (
+                      <p>Riwayat Diabetes: <span className="font-semibold">{rec.preexisting_diabetes ? 'Ya' : 'Tidak'}</span></p>
+                    )}
+                    {rec.gestational_diabetes !== null && (
+                      <p>Diabetes Gestasional: <span className="font-semibold">{rec.gestational_diabetes ? 'Ya' : 'Tidak'}</span></p>
+                    )}
+                    {rec.mental_health !== null && (
+                      <p>Kesehatan Mental: <span className="font-semibold">{rec.mental_health ? 'Ya' : 'Tidak'}</span></p>
+                    )}
+                    {rec.risk_classification && (
+                      <>
+                        <p className={`rounded-xl px-3 py-1 inline-block font-semibold ${
+                          rec.risk_classification.toLowerCase().includes('high') ? 'text-red-600 bg-red-100'
+                          : rec.risk_classification.toLowerCase().includes('low') ? 'text-green-600 bg-green-100'
+                          : 'text-yellow-600 bg-yellow-100'
+                        }`}>
+                          {rec.risk_classification.toLowerCase().includes('high') ? '⚠️ Risiko Tinggi'
+                          : rec.risk_classification.toLowerCase().includes('low') ? '✅ Risiko Rendah'
+                          : `ℹ️ ${rec.risk_classification}`}
+                        </p>
+
+                        {rec.risk_classification.toLowerCase().includes('high') && (
+                          <p className="text-xs text-red-700 italic mt-1">
+                            Ditemukan faktor-faktor yang meningkatkan risiko kehamilan. Disarankan segera konsultasi dengan tenaga medis.
+                          </p>
+                        )}
+
+                        {rec.risk_classification.toLowerCase().includes('low') && (
+                          <p className="text-xs text-green-700 italic mt-1">
+                            Kondisi kehamilan terpantau normal. Tetap jaga kesehatan dan lakukan pemeriksaan rutin.
+                          </p>
+                        )}
+
+                        {!['high', 'low'].some(k => rec.risk_classification.toLowerCase().includes(k)) && (
+                          <p className="text-xs text-yellow-700 italic mt-1">
+                            Hasil tidak dapat diklasifikasikan secara pasti. Mohon konsultasi lebih lanjut ke tenaga medis.
+                          </p>
+                        )}
+
+                        <p className="text-xs text-gray-500 italic mt-1">
+                          Hasil ini bukan diagnosis medis. Gunakan sebagai panduan awal dan konsultasikan lebih lanjut ke dokter atau bidan.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                )}  
 
                 {/* Tombol Hapus */}
                 <motion.button

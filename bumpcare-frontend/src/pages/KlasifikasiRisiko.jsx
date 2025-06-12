@@ -3,6 +3,8 @@ import { CheckCircle } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
 import { motion } from 'framer-motion';
 import { submitRiskClassification } from '../presenters/riskPresenter';
+import getDeskripsiByLabel from '../utils/labelDeskripsi';
+import DeskripsiRisikoCard from '../components/DeskripsiRisikoCard';
 
 const fadeVariant = {
   whileHover: { scale: 1.02 },
@@ -21,7 +23,8 @@ export default function KlasifikasiRisiko() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null); // ⬅️ untuk menyimpan hasil klasifikasi
+  const [result, setResult] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,6 +34,7 @@ export default function KlasifikasiRisiko() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setSubmitted(false);
 
     try {
       const parsed = {
@@ -48,8 +52,8 @@ export default function KlasifikasiRisiko() {
       }
 
       const response = await submitRiskClassification(parsed);
-      setResult(response); // ⬅️ simpan hasil dari Flask
-
+      setResult(response);
+      setSubmitted(true);
     } catch (err) {
       alert(err.message || 'Gagal mengirim data');
       setResult(null);
@@ -60,47 +64,59 @@ export default function KlasifikasiRisiko() {
 
   return (
     <SidebarLayout>
-      <h1 className="text-4xl font-extrabold text-center text-[#AC1754]">Klasifikasi Risiko Kehamilan</h1>
-      <p className="text-gray-700 text-center text-sm sm:text-base mb-6">
-        Masukkan data ibu hamil untuk mengevaluasi risiko kehamilan.
-      </p>
+      <div className="max-w-4xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold text-center text-[#AC1754] mb-3">
+          Klasifikasi Risiko Kehamilan
+        </h1>
+        <p className="text-center text-gray-600 text-sm sm:text-base mb-8">
+          Isi data berikut untuk mengevaluasi risiko kehamilan ibu.
+        </p>
 
-      <motion.div className="max-w-3xl mx-auto bg-[#FFDCDC] rounded-3xl shadow-xl p-8 space-y-8"
-        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-
-        <motion.div className="bg-white rounded-2xl shadow-md p-6 space-y-6 border border-[#F2B8B5]"
-          initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-
-          {result && (
-            <motion.div className="flex flex-col gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm"
-              initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5" />
-                <p className="text-sm font-medium">Prediksi Risiko: <strong>{result.risk_classification === 'High' ? 'High Risk' : 'Low Risk'}</strong></p>
-              </div>
-              <p className="text-xs text-gray-700">Tingkat keyakinan: {(result.confidence * 100).toFixed(2)}%</p>
-            </motion.div>
-          )}
-
-          <motion.form onSubmit={handleSubmit} className="space-y-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
+        <motion.form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-3xl shadow-xl p-6 sm:p-10 space-y-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
               { label: 'Kadar Gula Darah (mmol/L)', name: 'blood_sugar' },
               { label: 'Suhu Tubuh (°C)', name: 'body_temperature' },
               { label: 'Detak Jantung (bpm)', name: 'heart_rate' },
-              { label: 'Riwayat Komplikasi Kesehatan', name: 'previous_complications', type: 'select' },
-              { label: 'Riwayat Diabetes Sebelum Hamil', name: 'preexisting_diabetes', type: 'select' },
-              { label: 'Diabetes Saat Hamil', name: 'gestational_diabetes', type: 'select' },
-              { label: 'Riwayat Kesehatan Mental', name: 'mental_health', type: 'select' },
+              {
+                label: 'Riwayat Komplikasi Kesehatan',
+                name: 'previous_complications',
+                type: 'select',
+              },
+              {
+                label: 'Riwayat Diabetes Sebelum Hamil',
+                name: 'preexisting_diabetes',
+                type: 'select',
+              },
+              {
+                label: 'Diabetes Saat Hamil',
+                name: 'gestational_diabetes',
+                type: 'select',
+              },
+              {
+                label: 'Riwayat Kesehatan Mental',
+                name: 'mental_health',
+                type: 'select',
+              },
             ].map(({ label, name, type }) => (
               <div key={name}>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">{label}</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  {label}
+                </label>
                 {type === 'select' ? (
                   <select
                     name={name}
                     value={formData[name]}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]">
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]"
+                  >
                     <option value="">Pilih</option>
                     <option value="0">Tidak</option>
                     <option value="1">Ya</option>
@@ -112,24 +128,67 @@ export default function KlasifikasiRisiko() {
                     value={formData[name]}
                     onChange={handleChange}
                     required
-                    className="w-full rounded-xl border border-gray-400 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]"
+                    className="w-full rounded-xl border border-gray-300 px-4 py-2 bg-white focus:ring-2 focus:ring-[#AC1754]"
                   />
                 )}
               </div>
             ))}
+          </div>
 
-            <motion.button
-              {...fadeVariant}
-              type="submit"
-              disabled={loading}
-              className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-lg
-              ${loading ? 'bg-[#E53888] cursor-not-allowed' : 'bg-[#AC1754] hover:bg-[#E5408B]'}`}
-            >
-              {loading ? 'Memproses...' : 'Cek Risiko'}
-            </motion.button>
-          </motion.form>
-        </motion.div>
-      </motion.div>
+          <motion.button
+            {...fadeVariant}
+            type="submit"
+            disabled={loading}
+            className={`w-full py-4 rounded-2xl font-semibold text-white text-lg transition shadow-md ${
+              loading
+                ? 'bg-[#E53888] cursor-not-allowed'
+                : 'bg-[#AC1754] hover:bg-[#E5408B]'
+            }`}
+          >
+            {loading ? 'Memproses...' : 'Klasifikasikan'}
+          </motion.button>
+        </motion.form>
+
+        {submitted && result && (
+          <motion.div
+            className="mt-6 space-y-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="flex flex-col gap-1 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <p className="text-sm font-medium">
+                  Prediksi Risiko:{' '}
+                  <strong>
+                    {result.risk_classification === 'High'
+                      ? 'Risiko Tinggi'
+                      : 'Risiko Rendah'}
+                  </strong>
+                </p>
+              </div>
+              <p className="text-sm text-gray-700 pl-7">
+                Tingkat keyakinan model:{' '}
+                <strong>{(result.confidence * 100).toFixed(2)}%</strong>
+              </p>
+            </div>
+
+            <DeskripsiRisikoCard
+              status={
+                result.risk_classification === 'High'
+                  ? 'Risiko Tinggi'
+                  : 'Risiko Rendah'
+              }
+              markdown={getDeskripsiByLabel(
+                result.risk_classification === 'High'
+                  ? 'Risiko Tinggi'
+                  : 'Risiko Rendah'
+              )}
+            />
+          </motion.div>
+        )}
+      </div>
     </SidebarLayout>
   );
 }

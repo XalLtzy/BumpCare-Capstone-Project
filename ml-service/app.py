@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import numpy as np
+import pandas as pd  
 import tensorflow as tf
 import joblib
 
@@ -89,11 +90,19 @@ def predict_risk():
         ]:
             return jsonify({"error": "Semua fitur risiko kehamilan harus diisi."}), 400
 
-        bmi = float(bmi)  # pastikan BMI berbentuk float
+        bmi = float(bmi)
 
-        input_data = np.array([[age, systolic, diastolic, bs, body_temp, bmi,
-                                prev_comp, diabetes_pre, diabetes_gest, mental_health, heart_rate]])
-        input_scaled = scaler_risiko.transform(input_data)
+        columns = [
+            'Age', 'Systolic BP', 'Diastolic', 'BS', 'Body Temp', 'BMI',
+            'Previous Complications', 'Preexisting Diabetes',
+            'Gestational Diabetes', 'Mental Health', 'Heart Rate'
+        ]
+
+        input_data = [[age, systolic, diastolic, bs, body_temp, bmi,
+                       prev_comp, diabetes_pre, diabetes_gest, mental_health, heart_rate]]
+        input_df = pd.DataFrame(input_data, columns=columns)
+
+        input_scaled = scaler_risiko.transform(input_df)
 
         prediction = model_risiko.predict(input_scaled)
         pred_class = np.argmax(prediction, axis=1)

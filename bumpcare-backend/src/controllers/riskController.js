@@ -125,7 +125,7 @@ const classifyRiskHandler = async (request, h) => {
       data: {
         recordId: id,
         bmi,
-        risk_classification: riskResult.prediction,
+        risk_classification: riskResult,
         confidence,
       }
     }).code(200);

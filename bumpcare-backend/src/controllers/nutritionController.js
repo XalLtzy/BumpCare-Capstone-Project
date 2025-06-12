@@ -53,6 +53,8 @@ const classifyNutritionHandler = async (request, h) => {
     console.log('Response dari Flask:', response.data); 
 
     const nutritionStatus = response.data?.prediction;
+    const confidence = response.data?.confidence;
+  
     if (!nutritionStatus) {
       return h.response({
         status: 'error',
@@ -81,6 +83,7 @@ const classifyNutritionHandler = async (request, h) => {
         systolic,
         diastolic,
         nutritionStatus,
+        confidence,
       },
     }).code(200);
 

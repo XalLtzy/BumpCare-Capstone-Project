@@ -150,8 +150,96 @@ Gizi lebih atau obesitas pada ibu hamil bisa menimbulkan komplikasi, baik selama
 ### 📣 **Catatan Penting**
 Gizi lebih bukan akhir dari segalanya. Dengan bimbingan yang tepat dan gaya hidup sehat, Anda tetap bisa menjalani kehamilan yang aman dan nyaman.
 `;
+    case 'Risiko Tinggi':
+      return `
+
+### 🚨 *Perhatian Khusus Diperlukan*
+
+Hasil menunjukkan bahwa kehamilan Anda termasuk dalam kategori **berisiko tinggi**. Kondisi ini berarti Anda atau janin memiliki faktor-faktor tertentu yang dapat meningkatkan potensi komplikasi selama kehamilan, persalinan, atau setelah melahirkan.
+
+---
+
+### 🩺 **Apa Itu Kehamilan Berisiko Tinggi?**
+Kehamilan berisiko tinggi adalah kondisi saat ibu atau janin memiliki **faktor kesehatan, riwayat medis, atau kondisi tertentu** yang memerlukan pemantauan lebih ketat dan perawatan khusus.
+
+### 🔍 **Faktor-Faktor Umum Penyebab Risiko Tinggi**
+- 📊 Tekanan darah tinggi (hipertensi)
+- 💉 Diabetes gestasional
+- 🩸 Anemia atau kekurangan hemoglobin
+- 🤰 Riwayat kehamilan bermasalah sebelumnya
+- 🔄 Hamil di usia terlalu muda (<18 tahun) atau terlalu tua (>35 tahun)
+- ❤️ Riwayat penyakit kronis (jantung, ginjal, dll)
+- 👶 Janin dengan gangguan pertumbuhan atau kelainan
+- 🤕 BMI sangat rendah atau sangat tinggi
+- 🔪 Riwayat operasi rahim atau keguguran berulang
+
+---
+
+### 🧭 **Risiko yang Mungkin Terjadi**
+#### Pada Ibu:
+- Preeklamsia
+- Pendarahan saat persalinan
+- Persalinan prematur
+- Komplikasi penyakit kronis
+
+#### Pada Janin:
+- Kelahiran prematur
+- Berat badan lahir rendah atau besar
+- Masalah perkembangan organ
+- Risiko cacat lahir
+
+---
+
+### 💡 **Langkah Pencegahan & Penanganan**
+1. 🩺 Pemeriksaan antenatal intensif
+2. 🍽️ Nutrisi seimbang
+3. 📉 Kendalikan penyakit penyerta
+4. 🏥 Siapkan persalinan khusus
+5. 🤝 Dukungan psikologis dan sosial
+
+---
+
+### 📣 **Kesimpulan**
+Kehamilan berisiko tinggi **bukan berarti berbahaya jika dikelola dengan baik.** Dengan pemantauan intensif dan dukungan medis, ibu tetap bisa melahirkan dengan aman dan sehat.
+`;
+
+    case 'Risiko Rendah':
+      return `
+
+### 🌼 *Selamat!*
+
+Hasil menunjukkan bahwa kehamilan Anda saat ini termasuk dalam **kategori risiko rendah**. Ini berarti tidak terdapat faktor kesehatan atau kondisi medis yang signifikan yang dapat membahayakan Anda atau janin secara langsung.
+
+---
+
+### 💡 **Apa Arti Risiko Rendah?**
+Kehamilan risiko rendah menunjukkan bahwa **kondisi fisik dan medis ibu dan janin berada dalam batas normal**, tanpa komplikasi yang terdeteksi sejauh ini.
+
+---
+
+### 🧘‍♀️ **Keuntungan Kehamilan Risiko Rendah**
+- 💖 Peluang lebih besar untuk kehamilan sehat
+- 🤱 Potensi lebih tinggi melahirkan secara normal
+- 👶 Risiko komplikasi janin lebih kecil
+- 🧘‍♀️ Proses kehamilan cenderung stabil
+
+---
+
+### ✅ **Tips Menjaga Kehamilan Risiko Rendah**
+1. 🩺 Rutin periksa kehamilan
+2. 🥗 Jaga asupan nutrisi
+3. 🚶 Tetap aktif & sehat
+4. 😌 Kelola stres
+5. 💤 Istirahat yang cukup
+
+---
+
+### 📣 **Catatan Penting**
+Meski berada dalam kategori risiko rendah, **kehamilan tetap membutuhkan perhatian dan perawatan rutin.** Tetap jaga pola hidup sehat dan konsultasikan apapun yang dirasa tidak biasa kepada tenaga medis.
+`;
+   
     default:
-      return 'Status gizi tidak diketahui atau belum tersedia.';
+      return 'Status klasifikasi tidak diketahui atau belum tersedia.';
   }
 };
 

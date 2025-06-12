@@ -27,6 +27,7 @@ export default function KlasifikasiGizi() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [statusGizi, setStatusGizi] = useState('');
+  const [confidence, setConfidence] = useState(null); // Tambahan
   const [deskripsiGizi, setDeskripsiGizi] = useState('');
 
   const bmi =
@@ -75,8 +76,11 @@ export default function KlasifikasiGizi() {
       const result = await submitNutritionClassification(payload);
       if (result.error) throw new Error(result.error);
 
-      const status = result.nutritionStatus || 'Tidak Diketahui';
+      const status = result.nutritionStatus || result.prediction || 'Tidak Diketahui';
+      const conf = result.confidence ?? null;
+
       setStatusGizi(status);
+      setConfidence(conf); 
       setDeskripsiGizi(getDeskripsiByLabel(status));
       setSubmitted(true);
     } catch (err) {
@@ -105,14 +109,14 @@ export default function KlasifikasiGizi() {
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             {[
-              { label: 'Umur Ibu (tahun)', name: 'umur', readOnly: true },
+              { label: 'Umur (tahun)', name: 'umur', readOnly: true },
               { label: 'Berat Badan Sebelum Hamil (kg)', name: 'beratSebelum', readOnly: true },
-              { label: 'Berat Badan Saat Ini (kg)', name: 'beratSekarang', readOnly: true },
+              { label: 'Berat Badan Sekarang (kg)', name: 'beratSekarang', readOnly: true },
               { label: 'Tinggi Badan (cm)', name: 'tinggi', readOnly: true },
-              { label: 'Lingkar Lengan Atas (LILA) (cm)', name: 'lila' },
-              { label: 'Hemoglobin (Hb) (g/dL)', name: 'hb' },
-              { label: 'Tekanan Darah Sistolik (mmHg)', name: 'sistolik' },
-              { label: 'Tekanan Darah Diastolik (mmHg)', name: 'diastolik' },
+              { label: 'Lingkar Lengan Atas (cm)', name: 'lila', readOnly: false },
+              { label: 'Hemoglobin (g/dL)', name: 'hb', readOnly: false },
+              { label: 'Tekanan Darah Sistolik', name: 'sistolik', readOnly: false },
+              { label: 'Tekanan Darah Diastolik', name: 'diastolik', readOnly: false },
             ].map(({ label, name, readOnly }) => (
               <div key={name}>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -125,10 +129,10 @@ export default function KlasifikasiGizi() {
                   onChange={handleChange}
                   readOnly={readOnly}
                   disabled={readOnly}
-                        className={`w-full rounded-xl border px-4 py-2 shadow-sm transition ${
-                  readOnly
-                    ? 'bg-gray-100 cursor-not-allowed text-gray-500'
-                    : 'bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#AC1754]'
+                  className={`w-full rounded-xl border px-4 py-2 shadow-sm transition ${
+                    readOnly
+                      ? 'bg-gray-100 cursor-not-allowed text-gray-500'
+                      : 'bg-white border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#AC1754]'
                   }`}
                   required
                 />
@@ -161,10 +165,15 @@ export default function KlasifikasiGizi() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="flex items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 bg-green-100 text-green-800 px-4 py-3 rounded-xl shadow-sm mb-4">
               <CheckCircle className="w-5 h-5" />
               <p className="text-sm font-medium">
                 Status Gizi: <strong>{statusGizi}</strong>
+                {confidence !== null && (
+                  <span className="ml-2 text-xs text-gray-700">
+                    (Tingkat Keyakinan Model: {(confidence * 100).toFixed(1)}%)
+                  </span>
+                )}
               </p>
             </div>
 
