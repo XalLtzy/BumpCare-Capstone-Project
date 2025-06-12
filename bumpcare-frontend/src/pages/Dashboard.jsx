@@ -3,6 +3,8 @@ import SidebarLayout from '../components/SidebarLayout';
 import { useNavigate } from 'react-router-dom';
 import { getUserProfile } from '../presenters/userPresenter';
 import { fetchLatestResult } from '../presenters/resultPresenter';
+import { fetchLatestNutritionInput } from '../presenters/nutritionPresenter';
+import { fetchLatestRiskInput } from '../presenters/riskPresenter';
 import { motion } from 'framer-motion';
 import {
   HiOutlineUser,
@@ -28,6 +30,8 @@ export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [bmiData, setBmiData] = useState(null);
+  const [nutritionData, setNutritionData] = useState(null);
+  const [riskData, setRiskData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,8 +46,18 @@ export default function Dashboard() {
             .then(({ data: resultData, error }) => {
               setBmiData(!error ? resultData : null);
             });
+
+          fetchLatestNutritionInput()
+            .then(({ data }) => setNutritionData(data))
+            .catch(() => setNutritionData(null));
+
+          fetchLatestRiskInput()
+            .then(({ data }) => setRiskData(data))
+            .catch(() => setRiskData(null));
         } else {
           setBmiData(null);
+          setNutritionData(null);
+          setRiskData(null);
         }
       })
       .catch(() => {
@@ -140,12 +154,37 @@ export default function Dashboard() {
                 ))}
               </div>
             </motion.div>
+            
+            {/* Hasil Klasifikasi Gizi dan Risiko */}
+            <motion.div {...fadeInDelayed} className="bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8">
+              <h2 className="text-xl md:text-2xl font-bold text-[#AC1754] mb-4 md:mb-6">Hasil Klasifikasi</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-center text-sm md:text-base">
+                {[
+                  {
+                    title: 'Status Gizi',
+                    value: nutritionData?.nutrition_status || 'Belum tersedia',
+                    icon: <HiOutlineBeaker className="w-6 h-6 mx-auto text-[#AC1754]" />
+                  },
+                  {
+                    title: 'Risiko Kehamilan',
+                    value: riskData?.risk_classification || 'Belum tersedia',
+                    icon: <HiOutlineHeart className="w-6 h-6 mx-auto text-[#AC1754]" />
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="rounded-xl p-4 md:p-6 shadow-inner bg-[#FFF2EB]">
+                    {item.icon}
+                    <p className="text-2xl md:text-3xl font-extrabold text-[#AC1754] mt-2">{item.value}</p>
+                    <p className="font-semibold text-gray-700">{item.title}</p>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
 
             {/* Rekomendasi Makanan */}
             <motion.div {...fadeInDelayed} className="bg-[#FFDCDC] rounded-2xl shadow-lg p-4 md:p-8">
               <h2 className="text-xl md:text-2xl font-bold text-[#AC1754] mb-4 md:mb-6">Rekomendasi Makanan</h2>
               <p className="mb-4 md:mb-6 text-gray-600 text-sm md:text-base max-w-xl">
-                Berdasarkan hasil perhitungan gizi terakhir, berikut beberapa rekomendasi makanan untuk menjaga kesehatan dan nutrisi Anda.
+                Berikut beberapa rekomendasi makanan untuk menjaga kesehatan dan nutrisi Anda.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
                 {foodRecommendations.map(food => (

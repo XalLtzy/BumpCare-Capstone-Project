@@ -225,21 +225,33 @@ export default function Home() {
           <h3 className="text-4xl font-bold mb-12 text-[#AC1754] text-center">Fitur Unggulan</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { title: 'Hitung Kebutuhan Gizi', desc: 'Kalori & nutrisi harian berdasarkan trimester', icon: '🍔' },
-              { title: 'Rekomendasi Makanan', desc: 'Daftar makanan sehat sesuai kebutuhan', icon: '🥗' },
-              { title: 'Pantau Perkembangan', desc: 'Lacak perubahan BMI & berat badan', icon: '🫶' },
+              {
+                title: 'Hitung Kebutuhan Gizi',
+                desc: 'Bantu ibu hamil menghitung kebutuhan kalori dan nutrisi harian secara akurat berdasarkan usia kehamilan dan data pribadi seperti berat badan, tinggi, serta trimester yang sedang dijalani.',
+                icon: '🍽️',
+              },
+              {
+                title: 'Klasifikasi Gizi',
+                desc: 'Mendeteksi status gizi ibu hamil dengan cermat menggunakan parameter seperti BMI, LILA, dan kadar hemoglobin untuk memberikan pemantauan kesehatan secara menyeluruh.',
+                icon: '📊',
+              },
+              {
+                title: 'Klasifikasi Risiko',
+                desc: 'Menilai risiko kehamilan melalui analisis data seperti tekanan darah, suhu tubuh, dan riwayat medis untuk mendeteksi potensi komplikasi secara dini dan tepat.',
+                icon: '⚠️',
+              },
             ].map((item, i) => (
               <motion.div
                 key={item.title}
-                className="bg-[#FFF2EB] p-6 rounded-xl shadow-md hover:shadow-xl transition text-left"
+                className="bg-[#FFF2EB] p-6 rounded-xl shadow-md hover:shadow-xl transition text-center"
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 1.2, delay: i * 0.2, ease: 'easeInOut' }}
               >
                 <div className="text-5xl mb-4">{item.icon}</div>
-                <h4 className="text-xl font-semibold mb-2">{item.title}</h4>
-                <p className="text-gray-600">{item.desc}</p>
+                <h4 className="text-xl font-semibold mb-3 text-[#AC1754]">{item.title}</h4>
+                <p className="text-gray-700 text-sm leading-relaxed">{item.desc}</p>
               </motion.div>
             ))}
           </div>
@@ -257,20 +269,24 @@ export default function Home() {
 >
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center md:items-start gap-12 max-w-5xl">
         {/* Left Image */}
-        <div className="md:w-1/2 flex justify-center md:justify-start">
-           <img
-              src={tentangLogo} 
-              alt="Logo Bumpcare"
-              className="w-64 md:w-full max-w-sm rounded-lg shadow-lg"
-           />
+        <div className="md:w-1/2 flex justify-center md:justify-start relative">
+          <img
+            src={tentangLogo}
+            alt="Logo Bumpcare"
+            className="w-64 md:w-full max-w-sm rounded-lg shadow-lg md:mt-24 mt-8 md:-ml-8"
+          />
         </div>
 
         {/* Right Content */}
-        <div className="md:w-1/2 text-center md:text-left">
+        <div className="w-full md:max-w-3xl text-center md:text-left mx-auto">
           <h3 className="text-4xl font-bold mb-8 text-[#AC1754]">Apa itu Bumpcare?</h3>
             <p className="text-xl text-gray-700 mb-8 leading-relaxed tracking-wide">
-               BumpCare adalah aplikasi pendamping kehamilan berbasis web yang dirancang khusus untuk mendukung kesehatan ibu dan bayi.  
-               Dengan pemantauan gizi personal dan fitur-fitur pintar yang disesuaikan dengan kebutuhan tiap trimester, kami membantu perjalanan kehamilan Anda menjadi lebih aman dan nyaman.
+               BUMPCARE adalah platform digital yang dirancang untuk membantu ibu hamil memantau kondisi kehamilan dan status gizi secara mandiri. 
+               Kami percaya bahwa setiap ibu berhak mendapatkan akses terhadap informasi kesehatan yang akurat, terpercaya, dan mudah dipahami, kapan pun dan di mana pun mereka berada.
+            </p>
+            <p className="text-xl text-gray-700 mb-8 leading-relaxed tracking-wide">
+               Melalui inovasi teknologi, BUMPCARE hadir sebagai jembatan antara masyarakat dan layanan kesehatan. 
+               Aplikasi ini memberikan gambaran awal mengenai kondisi kehamilan dan gizi, sekaligus mendorong kesadaran pentingnya pemeriksaan rutin ke tenaga medis profesional.
             </p>
         </div>
        </div>

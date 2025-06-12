@@ -96,13 +96,12 @@ export default function SidebarLayout({ children }) {
                     <span>{openMenu === item.name ? '▲' : '▼'}</span>
                   </button>
 
-                  <div className={`ml-6 mt-2 space-y-1 transition-all duration-200 ease-in-out ${openMenu === item.name ? 'block' : 'hidden'}`}>
+                  <div className={`pl-4 border-l-2 border-[#AC1754]/30 mt-2 space-y-1 transition-all duration-300 ease-in-out ${openMenu === item.name ? 'block' : 'hidden'}`}>
                     {item.children.map((subItem) => (
                       <Link
                         key={subItem.path}
                         to={subItem.path}
-                        className={`flex items-start px-3 py-2 rounded-md text-sm font-medium font-poppins transition-all duration-200
-                          before:content-['•'] before:mr-2 before:text-[#AC1754]
+                        className={`flex items-start px-3 py-2 rounded-md text-sm font-medium transition-all duration-200
                           ${location.pathname === subItem.path
                             ? 'bg-[#AC1754]/80 text-white'
                             : 'text-gray-700 hover:bg-[#AC1754]/10 hover:text-[#AC1754]'}`}

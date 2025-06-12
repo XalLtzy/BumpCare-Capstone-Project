@@ -3,6 +3,7 @@ import { CheckCircle, Star } from 'lucide-react';
 import SidebarLayout from '../components/SidebarLayout';
 import { motion } from 'framer-motion';
 import { submitTestimoni } from '../presenters/testimoniPresenter';
+import { toast } from 'react-hot-toast';
 
 const fadeVariant = {
   whileHover: { scale: 1.02 },
@@ -38,13 +39,14 @@ export default function Testimoni() {
 
     try {
       await submitTestimoni({ message, rating });
+      toast.success('Ulasan berhasil dikirim!');
       setSubmitted(true);
       setMessage('');
       setRating(0);
-      window.alert('✅ Ulasan berhasil dikirim!');
     } catch (error) {
       console.error(error);
-      window.alert(`❌ ${error.message}`);
+      const msg = error?.response?.data?.message || error.message || 'Gagal mengirim ulasan';
+      toast.error(`❌ ${msg}`);
     } finally {
       setLoading(false);
       setTimeout(() => setSubmitted(false), 3000);
