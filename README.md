@@ -1,93 +1,140 @@
+# 💙 BumpCare - Capstone Project
 
-# BumpCare Web Application
+BumpCare adalah aplikasi web untuk membantu pemantauan status gizi dan risiko kesehatan mental ibu hamil. Aplikasi ini mengintegrasikan sistem backend, frontend, dan layanan machine learning untuk melakukan klasifikasi otomatis berbasis data pengguna.
 
-BumpCare adalah aplikasi web yang dikembangkan untuk membantu pengguna, khususnya ibu hamil, dalam memantau status gizi, risiko kehamilan, serta mengelola data terkait kesehatan dan nutrisi. Aplikasi ini terdiri dari frontend berbasis React.js dan backend menggunakan Node.js dengan framework Hapi, serta mengikuti arsitektur MVP (Model-View-Presenter).
+---
 
-## ✨ Fitur Utama
-
-### Front-End
-- Responsive UI untuk semua ukuran layar (mobile-first design)
-- Autentikasi (Login/Register) dengan validasi token
-- Kalkulator status gizi & risiko kehamilan
-- Halaman dashboard, profil pengguna, dan catatan gizi
-- Animasi interaktif dengan Framer Motion
-- Notifikasi real-time dengan react-hot-toast
-- Navigasi halaman dengan react-router-dom
-- Penggunaan MVP (Model-View-Presenter) untuk modularitas kode
-
-### Back-End
-- RESTful API menggunakan Hapi.js
-- Struktur modular: controller, routes, middleware, validations
-- Validasi input dengan Joi
-- Otentikasi JWT & enkripsi password dengan bcrypt
-- Penyimpanan data menggunakan PostgreSQL
-- Middleware otorisasi untuk rute yang dilindungi
-
-## 🧱 Arsitektur Proyek
-
-### Front-End
-Struktur proyek frontend menggunakan pendekatan arsitektur MVP (Model-View-Presenter) dengan pembagian folder sebagai berikut:
+## 📁 Struktur Proyek
 
 ```
-bumpcare-frontend/
-├── src/
-│   ├── models/         # Berisi logika pengambilan data dari API
-│   ├── pages/          # Komponen halaman (Home, Login, Register, Calculator, dsb)
-│   ├── presenters/     # Menghubungkan data dengan tampilan (MVP pattern)
-│   ├── components/     # (Opsional) Komponen UI reusable
-│   └── App.jsx         # Konfigurasi routing utama
-├── public/
-├── index.html
-└── vite.config.js
+.
+├── bumpcare-backend/     # Backend Hapi.js (REST API)
+├── bumpcare-frontend/    # Frontend React 19
+├── ml-service/           # Layanan ML untuk klasifikasi
 ```
 
-### Back-End
-Struktur backend menggunakan pendekatan modular dengan Hapi.js:
+---
 
+## 🚀 Fitur Utama
+
+* Autentikasi pengguna (Login, Register)
+* Profil pengguna dengan auto-fill data
+* Kalkulator kehamilan
+* Klasifikasi status gizi ibu hamil
+* Klasifikasi risiko kesehatan mental
+* Visualisasi data pemeriksaan
+* Model Machine Learning dengan TensorFlow dan Scikit-learn
+
+---
+
+## 🔧 Tech Stack
+
+### Frontend:
+
+* React 19
+* Tailwind CSS
+* Lucide React, React Icons, React Markdown
+* Vite
+
+### Backend:
+
+* Node.js + Hapi.js
+* Joi (validasi)
+* JWT (autentikasi)
+* PostgreSQL
+
+### Machine Learning Service:
+
+* Flask
+* TensorFlow
+* Scikit-learn
+
+Model:
+
+* `model_status_gizi.h5`
+* `mental_health_risk_model_full.h5`
+
+---
+
+## 🔧 Cara Menjalankan
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/yourusername/bumpcare-capstone-project.git
+cd bumpcare-capstone-project
 ```
-bumpcare-backend/
-├── src/
-│   ├── controllers/    # Fungsi utama: authController.js, pregnancyController.js, dsb.
-│   ├── routes/         # Rute REST API: authRoutes.js, userRoutes.js, dsb.
-│   ├── models/         # Koneksi dan fungsi akses PostgreSQL
-│   ├── validations/    # Validasi schema menggunakan Joi
-│   ├── middleware/     # Middleware: autentikasi dan error handler
-│   └── index.js        # Entry point server dengan konfigurasi Hapi.js
-├── .env
-├── .env.example
-└── package.json
+
+### 2. Jalankan Backend
+
+```bash
+cd bumpcare-backend
+npm install
+npm run dev
 ```
 
-## ⚙️ Instalasi
+Siapkan file `.env` di direktori `bumpcare-backend/`:
 
-### Front-End
+```env
+DB_HOST=localhost
+DB_PORT=5000 
+DB_USER=youruser
+DB_PASS=yourpass
+DB_NAME=bumpcare
+DB_SSL=true/false
+JWT_SECRET=your_jwt_secret
+```
+
+### 3. Jalankan Frontend
+
 ```bash
 cd bumpcare-frontend
 npm install
 npm run dev
 ```
 
-### Back-End
+### 4. Jalankan ML Service
+
 ```bash
-cd bumpcare-backend
-npm install
-node src/index.js
+cd ml-service
+pip install -r requirements.txt
+python app.py
 ```
 
-## 📁 Environment Variables
+ML service akan berjalan di `http://localhost:5001`.
 
-Pastikan kamu membuat file `.env` berdasarkan `.env.example` dengan konfigurasi seperti berikut:
+---
 
-```
-DB_HOST=your_database_host
-DB_PORT=your_database_port
-DB_USER=your_database_user
-DB_PASS=your_database_password
-DB_NAME=your_database_name
-DB_SSL=true_or_false
-JWT_SECRET=your_jwt_secret_key
-```
+## 📌 Catatan Penting
+
+* Jangan commit file `.env` ke GitHub.
+* Semua komunikasi lintas service (frontend, backend, ML) harus pakai URL & port yang sesuai.
+* Gunakan Postman atau frontend untuk uji endpoint REST.
+
+---
+
+## 👩‍💼 Tim Capstone
+
+### Machine Learning (ML):
+
+* **MC012D5X1208** - Tyas Nur Kumala - Telkom University
+* **MC011D5X1270** - Maharani Rizki Febrianti - Universitas Padjadjaran
+* **MC012D5Y2163** - Muhammad Hafizhuda - Telkom University
+
+### Fullstack Developer (FEBE):
+
+* **FC764D5Y0417** - Ageng Eko Widitya - Universitas Teknologi Bandung
+* **FC764D5X0379** - Hikam Sirrul Arifin - Universitas Teknologi Bandung
+* **FC764D5Y0732** - Naufal Pratista Sugandhi - Universitas Teknologi Bandung
+
+---
+
+## 📸 Tampilan Aplikasi
+
+> ![alt text](image.png)
+
+---
 
 ## 📄 Lisensi
 
-Proyek ini dibuat untuk tujuan edukasi dan pengembangan dalam konteks Capstone Project Coding Camp Oleh Tim Kami.
+MIT License - Boleh digunakan untuk pembelajaran dan pengembangan pribadi atas izin developer.
