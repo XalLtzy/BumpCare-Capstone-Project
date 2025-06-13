@@ -45,8 +45,9 @@ def predict_nutrition():
         tinggi_m = tinggi_badan / 100
         imt = bb_sekarang / (tinggi_m ** 2)
 
-        input_data = np.array([[bb_dulu, bb_sekarang, tinggi_badan, lila, hb, imt, sistolik, diastolik]])
-        input_scaled = scaler_gizi.transform(input_data)
+        columns = ['bb_dulu', 'bb_sekarang', 'tinggi_badan', 'lila', 'hb', 'IMT', 'sistolik', 'diastolik']
+        input_df = pd.DataFrame([[bb_dulu, bb_sekarang, tinggi_badan, lila, hb, imt, sistolik, diastolik]], columns=columns)
+        input_scaled = scaler_gizi.transform(input_df)
 
         prediction = model_gizi.predict(input_scaled)
         pred_class = np.argmax(prediction, axis=1)
