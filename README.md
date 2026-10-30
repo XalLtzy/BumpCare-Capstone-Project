@@ -61,7 +61,7 @@ Model:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/bumpcare-capstone-project.git
+git clone https://github.com/XalLtzy/bumpcare-capstone-project.git
 cd bumpcare-capstone-project
 ```
 
