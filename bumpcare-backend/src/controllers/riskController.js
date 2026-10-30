@@ -2,6 +2,10 @@ const axios = require('axios');
 const pool = require('../models/db');
 const { riskInputSchema } = require('../validations/riskValidation');
 
+const ML_SERVICE_URL = (
+  process.env.ML_SERVICE_URL || 'http://127.0.0.1:5000'
+).replace(/\/+$/, '');
+
 const classifyRiskHandler = async (request, h) => {
   const userId = request.auth.credentials.id;
 
@@ -82,7 +86,11 @@ const classifyRiskHandler = async (request, h) => {
 
     console.log('Payload ke Flask:', inputPayload);
 
-    const response = await axios.post('http://127.0.0.1:5000/predict-risk', inputPayload);
+    const response = await axios.post(
+  `${ML_SERVICE_URL}/predict-risk`,
+  inputPayload,
+  { timeout: 120000 }
+);
     const { prediction: riskResult, confidence } = response.data;
 
     if (!riskResult || typeof confidence !== 'number') {

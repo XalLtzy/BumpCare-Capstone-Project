@@ -2,6 +2,10 @@ const axios = require('axios');
 const pool = require('../models/db');
 const { nutritionInputSchema } = require('../validations/nutritionValidation');
 
+const ML_SERVICE_URL = (
+  process.env.ML_SERVICE_URL || 'http://127.0.0.1:5000'
+).replace(/\/+$/, '');
+
 const classifyNutritionHandler = async (request, h) => {
   const userId = request.auth.credentials.id;
   const { lila, hemoglobin, systolic, diastolic } = request.payload;
@@ -48,7 +52,11 @@ const classifyNutritionHandler = async (request, h) => {
 
     console.log('Payload yang dikirim ke Flask:', inputPayload);
 
-    const response = await axios.post('http://127.0.0.1:5000/predict', inputPayload);
+    const response = await axios.post(
+  `${ML_SERVICE_URL}/predict`,
+  inputPayload,
+  { timeout: 120000 }
+);
 
     console.log('Response dari Flask:', response.data); 
 
