@@ -18,5 +18,6 @@ node_modules
 # 🐍 ML-service (Python + model)
 # ========================
 ml-service/venv/
-ml-service/*.pkl
-ml-service/*.h5
+ml-service/.venv/
+ml-service/__pycache__/
+ml-service/*.pyc

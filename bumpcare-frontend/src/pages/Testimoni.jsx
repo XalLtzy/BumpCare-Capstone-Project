@@ -21,7 +21,7 @@ export default function Testimoni() {
     const fetchUserName = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:3000/api/profile', {
+        const res = await fetch('https://bumpcare-backend.vercel.app/api/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

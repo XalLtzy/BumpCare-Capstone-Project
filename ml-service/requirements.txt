@@ -1,7 +1,7 @@
-flask
-tensorflow
+Flask
+tensorflow==2.19.0
 scikit-learn==1.6.1
-numpy
+numpy==2.1.3
 joblib
-pandas
+pandas==2.3.0
 gunicorn
