@@ -4,6 +4,12 @@ BumpCare adalah aplikasi web untuk membantu pemantauan status gizi dan risiko ke
 
 ---
 
+## 🌐 Live Demo
+
+**[Access Live Demo](https://bumpcare.vercel.app/)**
+
+---
+
 ## 📁 Struktur Proyek
 
 ```
